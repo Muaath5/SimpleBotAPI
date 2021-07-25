@@ -1,0 +1,13 @@
+{
+    "name": "muaath5/simple-bot-api",
+    "description": "Simple & Easy Telegram Bot API in PHP",
+    "type": "library",
+    "license": "GPL-3.0-only",
+    "authors": [
+        {
+            "name": "Muaath Alqarni",
+            "email": "muaath1428@hotmail.com"
+        }
+    ],
+    "require": {}
+}

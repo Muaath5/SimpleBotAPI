@@ -1,7 +1,7 @@
 <?php
 
-include_once $_SERVER['DOCUMENT_ROOT'] . '/bot-api/BotAPIExceptions.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/bot-api/UpdatesHandler.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/SimpleBotAPI/UpdatesHandler.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/SimpleBotAPI/BotAPIExceptions.php';
 
 /**
  * Telegram bot client
