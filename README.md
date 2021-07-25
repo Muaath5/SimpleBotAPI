@@ -4,10 +4,27 @@ This is simple Telegram Bot API in PHP, Supports Bot API 5.3.
 This Library should support all Bot API versions.
 
 ## Using method
-```php
-
-$result = $Bot->
+It should be in this format:
 ```
+$Bot->{methodName}([
+    '{paramName}' => {value},
+    '{paramName2}' => {value2}
+]);
+```
+
+Like this:
+```php
+$Bot->SendMessage([
+    'chat_id' => '@Muaath_Alqarni',
+    'text' => 'Some post..'
+]);
+
+$my_channel_info = $Bot->getChat([
+    'chat_id' => '@Muaath_Alqarni',
+]);
+```
+
+The method has no problem if it was upper or lower case.
 
 ## Receiving updates
 You should use `UpdatesHandler` to handle all updates types

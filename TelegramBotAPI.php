@@ -1,7 +1,13 @@
 <?php
+namespace SimpleBotAPI;
 
-include_once $_SERVER['DOCUMENT_ROOT'] . '/SimpleBotAPI/UpdatesHandler.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/SimpleBotAPI/BotAPIExceptions.php';
+include 'vendor/autoload.php';
+
+use SimpleBotAPI\UpdatesHandler;
+
+use SimpleBotAPI\TelegramException;
+use SimpleBotAPI\TelegramChatMigrated;
+use SimpleBotAPI\TelegramFloodWait;
 
 /**
  * Telegram bot client
@@ -23,7 +29,7 @@ class TelegramBot
     public function __construct(string $token, UpdatesHandler $updates_handler = null, string $api_host = 'https://api.telegram.org')
     {
         if (preg_match('/^(\d+):[\w-]{30,}$/', $token, $matches) === 0) {
-            throw new InvalidArgumentException('The supplied token does not look correct...');
+            throw new \InvalidArgumentException('The supplied token does not look correct...');
         }
 
         $this->Token = $token;
@@ -131,7 +137,7 @@ class TelegramBot
 
         $result = curl_exec($this->curl);
         if (curl_errno($this->curl)) {
-            throw new RuntimeException(curl_error($this->curl), curl_errno($this->curl));
+            throw new \RuntimeException(curl_error($this->curl), curl_errno($this->curl));
         }
         $object = json_decode($result);
         if (!$object->ok) {

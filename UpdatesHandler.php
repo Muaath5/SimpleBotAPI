@@ -1,4 +1,6 @@
 <?php
+
+namespace SimpleBotAPI;
 /**
  * A class should be exists for each bot that processes all updates either webhook or long-polling.
  * @version Bot API 5.3
