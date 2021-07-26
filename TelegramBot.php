@@ -1,8 +1,6 @@
 <?php
 namespace SimpleBotAPI;
 
-include 'vendor/autoload.php';
-
 use SimpleBotAPI\UpdatesHandler;
 
 use SimpleBotAPI\TelegramException;
@@ -10,7 +8,7 @@ use SimpleBotAPI\TelegramChatMigrated;
 use SimpleBotAPI\TelegramFloodWait;
 
 /**
- * Telegram bot client
+ * Telegram Bot Client
  * @version Bot API 5.3
  */
 class TelegramBot
@@ -56,6 +54,11 @@ class TelegramBot
 
     public function OnUpdate(object $update) : bool
     {
+        if (empty($this->UpdatesHandler))
+        {
+            throw new \BadFunctionCallException("TelegramBot->UpdatesHandler is null!", 400);
+        }
+
         $this->LastUpdateID = $update->update_id;
         switch ($update)
         {
@@ -103,9 +106,14 @@ class TelegramBot
         }
     }
 
-    public function ReceiveUpdates(int $timeout = TelegramBot::TIMEOUT)
+    public function ReceiveUpdates(array $allowed_updates = ['message', 'edited_message', 'callback_query', 'inline_query', 'my_chat_member'], int $limit = 0, int $timeout = TelegramBot::TIMEOUT)
     {
-        $updates = $this->GetUpdates();
+        $updates = $this->GetUpdates([
+            'offset' => $this->LastUpdateID,
+            'timeout' => $timeout,
+            'limit' => $limit,
+            'allowed_updates' => $allowed_updates
+        ]);
         foreach ($updates as $update)
         {
             $this->OnUpdate($update);
@@ -113,14 +121,14 @@ class TelegramBot
     }
 
     /**
-     * [WIP] Support downloading files
-     * @param int $file_id File ID for the bot
-     * @param string $save_path Path to save the downloaded file
+     * Download file on the server.
+     * @param string $file_id File ID for the bot
+     * @param string $save_path Absolute path to save the downloaded file
      */
-    public function DownloadFile(int $file_id, string $save_path)
+    public function DownloadFile(string $file_id, string $save_path)
     {
         $file = $this->GetFile($file_id);
-        file_put_contents($save_path, file_get_contents("{$this->BotAPIFileUrl}/{$file->file_path}"));
+        file_put_contents($save_path, file_get_contents("{$this->TelegramBotFileUrl}/{$file->file_path}"));
     }
 
     /**

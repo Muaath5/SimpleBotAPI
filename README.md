@@ -3,6 +3,11 @@ This is simple Telegram Bot API in PHP, Supports Bot API 5.3.
 
 This Library should support all Bot API versions.
 
+## Installation
+Install it via composer, Make sure that `minimum-stability` is `dev`:
+```sh
+composer require muaath5/simple-bot-api
+```
 ## Using method
 It should be in this format:
 ```
@@ -27,9 +32,18 @@ $my_channel_info = $Bot->getChat([
 The method has no problem if it was upper or lower case.
 
 ## Receiving updates
-You should use `UpdatesHandler` to handle all updates types
+You should create a class that inherets from `UpdatesHandler` to handle all updates types, And do what ever you want.
 Example of Bot that sends welcome to users:
 ```php
+<?php
+
+namespace MyBot1;
+
+require '../vender/autoload.php';
+
+use SimpleBotAPI\UpdatesHandler;
+use SimpleBotAPI\TelegramBot;
+
 class WelcomeBot extends UpdatesHandler
 {
     private TelegramBot? Bot = null;
@@ -85,6 +99,14 @@ class WelcomeBot extends UpdatesHandler
 ```
 And the source of the webhook page (`webhook.php`):
 ```php
+<?php
+namespace MyBot1;
+
+require '../vender/autoload.php';
+
+use SimpleBotAPI\TelegramBot;
+use MyBot1\WelcomeBot;
+
 $Bot = new TelegramBot(getenv('BOT_TOKEN'));
 $Bot->SetUpdatesHandler(new WelcomeBot($Bot));
 $Update = json_decode(file_get_contents('php://input'));
