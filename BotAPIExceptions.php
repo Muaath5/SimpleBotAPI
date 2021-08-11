@@ -1,7 +1,7 @@
 <?php
 namespace SimpleBotAPI;
 
-require 'vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 /**
  * Some of Bot API Errors
