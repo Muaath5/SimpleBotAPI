@@ -1,8 +1,6 @@
 <?php
 namespace SimpleBotAPI;
 
-require __DIR__ . '/vendor/autoload.php';
-
 /**
  * Some of Bot API Errors
  * @version Bot API 5.3

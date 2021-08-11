@@ -15,5 +15,10 @@
         "issues": "https://github.com/Muaath5/SimpleBotAPI/issues"
     },
     "minimum-stability": "stable",
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "SimpleBotAPI\\": "src"
+        }
+    }
 }
