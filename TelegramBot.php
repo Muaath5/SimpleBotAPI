@@ -1,6 +1,8 @@
 <?php
 namespace SimpleBotAPI;
 
+require 'vendor/autoload.php';
+
 use SimpleBotAPI\UpdatesHandler;
 
 use SimpleBotAPI\TelegramException;
