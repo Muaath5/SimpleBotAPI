@@ -4,7 +4,7 @@ This is simple Telegram Bot API in PHP, Supports Bot API 5.3.
 This Library should support all Bot API versions.
 
 ## Installation
-Install it via composer, Make sure that `minimum-stability` is `dev`:
+Install it via composer:
 ```sh
 composer require muaath5/simple-bot-api
 ```
@@ -97,6 +97,9 @@ class WelcomeBot extends UpdatesHandler
     }
 }
 ```
+
+**Note:** You should take care of composer namespaces via `autoload` field in `composer.json` file!
+
 And the source of the webhook page (`webhook.php`):
 ```php
 <?php
