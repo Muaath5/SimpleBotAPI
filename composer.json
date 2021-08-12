@@ -1,7 +1,7 @@
 {
     "name": "muaath5/simple-bot-api",
     "description": "Simple & Easy Telegram Bot API in PHP",
-    "version": "5.3-alpha",
+    "version": "5.3.0.1",
     "type": "library",
     "license": "GPL-3.0-only",
     "authors": [
