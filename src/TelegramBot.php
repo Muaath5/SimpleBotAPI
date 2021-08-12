@@ -1,8 +1,6 @@
 <?php
 namespace SimpleBotAPI;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
-
 use SimpleBotAPI\UpdatesHandler;
 
 use SimpleBotAPI\TelegramException;
@@ -153,10 +151,10 @@ class TelegramBot
         if (!$object->ok) {
             if (property_exists($object, 'parameters')) {
                 if (property_exists($object->parameters, 'retry_after')) {
-                    throw new TelegramFloodWait($object);
+                    throw new TelegramFloodException($object);
                 }
                 if (property_exists($object->parameters, 'migrate_to_chat_id')) {
-                    throw new TelegramChatMigrated($object);
+                    throw new TelegramChatMigratedException($object);
                 }
             }
             throw new TelegramException($object);
