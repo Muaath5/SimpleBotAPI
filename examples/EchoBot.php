@@ -19,7 +19,7 @@ if ($_REQUEST['token'] == getenv('BOT_TOKEN'))
     $Bot = new TelegramBot(getenv('BOT_TOKEN'), new EchoBot());
 
     # Process Webhook Update
-    $Bot->OnWebhookUpdate();
+    $Bot->OnWebhookUpdate(file_get_contents('php://input'));
 }
 
 class EchoBot extends UpdatesHandler

@@ -43,9 +43,8 @@ $Bot = new TelegramBot('bot_token', new MyUpdatesHandler());
 
 ## Receiving webhook updates
 ```php
-$Bot->OnWebhookUpdate();
+$Bot->OnWebhookUpdate(file_get_contents('php://input'));
 ```
-This method depends on `file_get_contents('php://input')`
 
 ## License
 GPL 3.0 only
