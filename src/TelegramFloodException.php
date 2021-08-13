@@ -4,6 +4,9 @@ namespace SimpleBotAPI;
 
 use SimpleBotAPI\TelegramException;
 
+/**
+ * @version Bot API 5.3
+ */
 class TelegramFloodException extends TelegramException
 {
     public int $retry_after;

@@ -3,6 +3,9 @@ namespace SimpleBotAPI;
 
 use SimpleBotAPI\TelegramException;
 
+/**
+ * @version Bot API 5.3
+ */
 class TelegramChatMigratedException extends TelegramException
 {
     public $migrate_to_chat_id;

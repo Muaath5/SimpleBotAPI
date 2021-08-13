@@ -39,7 +39,7 @@ class TelegramBot
         curl_setopt($this->curl, CURLOPT_POST, true);
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, ['Content-Type:multipart/form-data']);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($this->curl, CURLOPT_TIMEOUT, $this::TIMEOUT); // botAPI might take 60s before returning error
+        curl_setopt($this->curl, CURLOPT_TIMEOUT, $this::TIMEOUT); // Bot API might take 60s before returning error
     }
 
     public function __destruct()
@@ -107,9 +107,11 @@ class TelegramBot
         }
     }
 
-    public function OnWebhookUpdate()
+    public function OnWebhookUpdate() : bool
     {
-        $this->OnUpdate(json_decode(file_get_contents('php://input')));
+        $Update = json_decode(file_get_contents('php://input'));
+        if (!empty($Update)) return false;
+        return $this->OnUpdate($Update);
     }
 
     public function ReceiveUpdates(array $allowed_updates = ['message', 'edited_message', 'callback_query', 'inline_query', 'my_chat_member'], int $limit = 0, int $timeout = TelegramBot::TIMEOUT)
