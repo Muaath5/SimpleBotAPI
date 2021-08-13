@@ -8,7 +8,7 @@ namespace SimpleBotAPI;
  */
 class UpdatesHandler
 {
-    private ?TelegramBot $Bot;
+    protected ?TelegramBot $Bot;
     public function __construct(?TelegramBot $bot = null)
     {
         $this->Bot = $bot;
