@@ -50,6 +50,7 @@ class TelegramBot
     public function SetUpdatesHandler(UpdatesHandler $new_updates_handler)
     {
         $this->UpdatesHandler = $new_updates_handler;
+        $this->UpdatesHandler->SetBot($this);
     }
 
     public function OnUpdate(object $update) : bool
@@ -104,6 +105,11 @@ class TelegramBot
                 # Don't do anything, Only when Bot API version in later
                 return false;
         }
+    }
+
+    public function OnWebhookUpdate()
+    {
+        $this->OnUpdate(json_decode(file_get_contents('php://input')));
     }
 
     public function ReceiveUpdates(array $allowed_updates = ['message', 'edited_message', 'callback_query', 'inline_query', 'my_chat_member'], int $limit = 0, int $timeout = TelegramBot::TIMEOUT)

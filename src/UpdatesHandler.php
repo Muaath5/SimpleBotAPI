@@ -6,31 +6,85 @@ namespace SimpleBotAPI;
  * A class should be exists for each bot that processes all updates either webhook or long-polling.
  * @version Bot API 5.3
  */
-abstract class UpdatesHandler
+class UpdatesHandler
 {
-    private TelegramBot $Bot;
-    public function __construct(TelegramBot $bot)
+    private ?TelegramBot $Bot;
+    public function __construct(?TelegramBot $bot = null)
     {
         $this->Bot = $bot;
     }
 
-    abstract public function MessageHandler(object $message) : bool;
-    abstract public function EditedMessageHandler(object $edited_message) : bool;
+    public function SetBot(?TelegramBot $bot = null)
+    {
+        $this->Bot = $bot;
+    }
 
-    abstract public function ChannelPostHandler(object $channel_post) : bool;
-    abstract public function EditedChannelPostHandler(object $edited_channel_post) : bool;
+    public function MessageHandler(object $message) : bool
+    {
+        return false;
+    }
 
-    abstract public function InlineQueryHandler(object $inline_query) : bool;
-    abstract public function ChosenInlineQueryHandler(object $chosen_inline_query) : bool;
+    public function EditedMessageHandler(object $edited_message) : bool
+    {
+        return false;
+    }
 
-    abstract public function CallbackQueryHandler(object $callback_query) : bool;
+    public function ChannelPostHandler(object $channel_post) : bool
+    {
+        return false;
+    }
 
-    abstract public function PollHandler(object $poll_answer) : bool;
-    abstract public function PollAnswerHandler(object $poll_answer) : bool;
+    public function EditedChannelPostHandler(object $edited_channel_post) : bool
+    {
+        return false;
+    }
 
-    abstract public function ShippingQueryHandler(object $shipping_query) : bool;
-    abstract public function PreCheckoutQueryHandler(object $pre_checkout_query) : bool;
+    public function InlineQueryHandler(object $inline_query) : bool
+    {
+        return false;
+    }
 
-    abstract public function MyChatMemberHandler(object $my_chat_member) : bool;
-    abstract public function ChatMemberHandler(object $chat_member) : bool;
+    public function ChosenInlineQueryHandler(object $chosen_inline_query) : bool
+    {
+        return false;
+    }
+
+
+    public function CallbackQueryHandler(object $callback_query) : bool
+    {
+        return false;
+    }
+
+
+    public function PollHandler(object $poll_answer) : bool
+    {
+        return false;
+    }
+
+    public function PollAnswerHandler(object $poll_answer) : bool
+    {
+        return false;
+    }
+
+
+    public function ShippingQueryHandler(object $shipping_query) : bool
+    {
+        return false;
+    }
+
+    public function PreCheckoutQueryHandler(object $pre_checkout_query) : bool
+    {
+        return false;
+    }
+
+
+    public function MyChatMemberHandler(object $my_chat_member) : bool
+    {
+        return false;
+    }
+
+    public function ChatMemberHandler(object $chat_member) : bool
+    {
+        return false;
+    }
 }
