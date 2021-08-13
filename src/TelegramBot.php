@@ -110,7 +110,7 @@ class TelegramBot
     public function OnWebhookUpdate() : bool
     {
         $Update = json_decode(file_get_contents('php://input'));
-        if (!empty($Update)) return false;
+        if (empty($Update)) return false;
         return $this->OnUpdate($Update);
     }
 
