@@ -5,7 +5,19 @@
 
 This is simple Telegram Bot API in PHP, Supports Bot API 5.3.
 
-This Library should support all Bot API versions.
+This Library should support all Bot API versions in methods.
+
+## Features
+- Supports all Bot API methods without needing to update.
+- Has updates handler which makes handling updates easier
+- Based on cURL.
+- Downloadable via composer.
+- Has tests which ensure that everything work.
+- GitHub Actions.
+- Has examples of some made bots.
+- Full Documented.
+- Has exceptions that make it easy to handle it.
+- Up to date.
 
 ## Installation
 
@@ -62,9 +74,10 @@ You can contribute by:
 - Report a bug.
 - Suggest a feature.
 - Improve code via Pull request.
-- Adding more examples via Pull request.
+- Adding more examples to `examples/` via Pull request.
 - Adding documentation for the library.
 - Updating the library to the next version of Bot API.
+- Adding more tests in `test/` folder
 
 ## Contact me
 - Telegram: [@Muaath_5](https://t.me/Muaath_5) [Suggested]

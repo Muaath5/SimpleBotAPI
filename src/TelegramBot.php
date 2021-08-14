@@ -34,7 +34,10 @@ class TelegramBot
         $this->TelegramBotUrl = "{$api_host}/bot{$this->Token}";
         $this->TelegramBotFileUrl = "{$api_host}/file/bot{$this->Token}";
         $this->UpdatesHandler = $updates_handler;
-        $this->UpdatesHandler->SetBot($this);
+        if (!empty($this->UpdatesHandler))
+        {
+            $this->UpdatesHandler->SetBot($this);
+        }
 
         $this->curl = curl_init();
         curl_setopt($this->curl, CURLOPT_POST, true);
