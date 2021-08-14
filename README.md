@@ -8,12 +8,21 @@ This is simple Telegram Bot API in PHP, Supports Bot API 5.3.
 This Library should support all Bot API versions.
 
 ## Installation
+
+### Prerequists
+- PHP 8.0 Or Higher
+- cURL PHP extension enabled
+
+### Installing
 Install it via composer:
 ```sh
 composer require muaath5/simple-bot-api
 ```
+Or Download `src/` folder and require it in your code.
 
-## Using method
+## Usage
+
+### Using method
 It should be in this format:
 ```
 $Result = $Bot->{methodName}([
@@ -36,21 +45,38 @@ $my_channel_info = $Bot->getChat([
 
 The method has no problem if it was upper or lower case.
 
-## Creating bot
+### Creating bot
 ```php
 $Bot = new TelegramBot('bot_token', new MyUpdatesHandler());
 ```
 
-## Receiving webhook updates
+### Receiving webhook updates
 ```php
 $success = $Bot->OnWebhookUpdate(file_get_contents('php://input'));
 ```
 `$success` will be boolean, So you can log or add to your statistics count of fails for the bot.
 
+
+## Contibuting
+You can contribute by:
+- Report a bug.
+- Suggest a feature.
+- Improve code via Pull request.
+- Adding more examples via Pull request.
+- Adding documentation for the library.
+- Updating the library to the next version of Bot API.
+
+## Contact me
+- Telegram: [@Muaath_5](https://t.me/Muaath_5) [Suggested]
+- Email: muaath1428@hotmail.com
+
 ## Examples
-Currently, There's two examples in `/examples/` folder
-- Weclome Bot
-- Echo Bot
+Currently, There're three examples in `examples/` folder:
+- Echo Bot, Which sends same as you sent
+- Weclome Bot, Which sends Welcome & ID of user who joins the group
+- Contact Me Bot, Which is a Bot be same as you, You'll receive messages & Reply
+
+All of these examples doesn't need any databases or files to storage.
 
 ## License
 GPL 3.0 only

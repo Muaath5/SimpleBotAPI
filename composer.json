@@ -15,7 +15,9 @@
         "issues": "https://github.com/Muaath5/SimpleBotAPI/issues"
     },
     "minimum-stability": "stable",
-    "require": {},
+    "require": {
+        "php": ">=8.0"
+    },
     "autoload": {
         "psr-4": {
             "SimpleBotAPI\\": "src/"

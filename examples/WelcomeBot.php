@@ -12,19 +12,27 @@ use SimpleBotAPI\UpdatesHandler;
 #
 # So, The webhook will check authentication
 # We will store BOT_TOKEN environment variable
+# Also you need to store logs chat ID in LOGS_CHAT_ID section
 
 # Check authentication
 if ($_REQUEST['token'] == getenv('BOT_TOKEN'))
 {
-    $Bot = new TelegramBot(getenv('BOT_TOKEN'), new EchoBot());
+    $Bot = new TelegramBot(getenv('BOT_TOKEN'), new WelcomeBot(getenv('LOGS_CHAT_ID')));
 
     # Process Webhook Update
     $Bot->OnWebhookUpdate(file_get_contents('php://input'));
 }
 
 # Note: When you send setWebhook method, Take care that chat_member updates should be allowed
-class EchoBot extends UpdatesHandler
+class WelcomeBot extends UpdatesHandler
 {
+    protected int|float|string $LogsChatID;
+
+    public function __construct(int|float|string $logs_chat_id)
+    {
+        $this->LogsChatID = $logs_chat_id;
+    }
+
     # Write the handler for updates that your bot needs
     public function MessageHandler(object $message): bool
     {
@@ -53,9 +61,8 @@ class EchoBot extends UpdatesHandler
             }
             catch (\Exception $ex)
             {
-                # You need to store your ID in MY_USER_ID section
                 $this->Bot->SendMessage([
-                    'chat_id' => getenv('MY_USER_ID'),
+                    'chat_id' => $this->LogsChatID,
                     'text' => "<b>Error</b>\n$ex"
                 ]);
                 return false;
