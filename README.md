@@ -16,8 +16,8 @@ composer require muaath5/simple-bot-api
 ## Using method
 It should be in this format:
 ```
-$Bot->{methodName}([
-    '{paramName}' => {value},
+$Result = $Bot->{methodName}([
+    '{paramName}' => {value1},
     '{paramName2}' => {value2}
 ]);
 ```
@@ -43,8 +43,14 @@ $Bot = new TelegramBot('bot_token', new MyUpdatesHandler());
 
 ## Receiving webhook updates
 ```php
-$Bot->OnWebhookUpdate(file_get_contents('php://input'));
+$success = $Bot->OnWebhookUpdate(file_get_contents('php://input'));
 ```
+`$success` will be boolean, So you can log or add to your statistics count of fails for the bot.
+
+## Examples
+Currently, There's two examples in `/examples/` folder
+- Weclome Bot
+- Echo Bot
 
 ## License
 GPL 3.0 only
