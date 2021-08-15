@@ -1,6 +1,7 @@
 # Simple Bot API
 [![Licence: GPL v3.0](https://img.shields.io/badge/Licence-GPL%20v3.0-green)](LICENCE)
 [![Bot API Version: 5.3](https://img.shields.io/badge/Bot%20API%20Version-5.3-dodgerblue)](https://core.telegram.org/bots/api#april-26-2021)
+![Workflow status](https://github.com/Muaath5/MuaathBots/actions/workflows/php.yml/badge.svg)
 
 
 This is simple Telegram Bot API in PHP, Supports Bot API 5.3.
