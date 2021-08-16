@@ -89,6 +89,7 @@ Currently, There're three examples in `examples/` folder:
 - Echo Bot, Which sends same as you sent
 - Weclome Bot, Which sends Welcome & ID of user who joins the group
 - Contact Me Bot, Which is a Bot be same as you, You'll receive messages & Reply
+- FAQ Bot, Which has one message & buttons to swap between questions
 
 All of these examples doesn't need any databases or files to storage.
 
