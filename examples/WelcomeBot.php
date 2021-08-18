@@ -1,11 +1,14 @@
 <?php
 # This file should be a webhook on your website
 
+namespace SimpleBotAPI\Examples;
+
 # Reuire autoload.php
-require __DIR__ . '/vendor/autoload.php';
+//require __DIR__ . '/vendor/autoload.php';
 
 use SimpleBotAPI\TelegramBot;
 use SimpleBotAPI\UpdatesHandler;
+use SimpleBotAPI\BotSettings;
 
 # The webhook url should be:
 # https://mywebsite.com/echo-bot.php?token={bot_token}
@@ -17,7 +20,7 @@ use SimpleBotAPI\UpdatesHandler;
 # Check authentication
 if ($_REQUEST['token'] == getenv('BOT_TOKEN'))
 {
-    $Bot = new TelegramBot(getenv('BOT_TOKEN'), new WelcomeBot(getenv('LOGS_CHAT_ID')));
+    $Bot = new TelegramBot(getenv('BOT_TOKEN'), new BotSettings(new WelcomeBot(getenv('LOGS_CHAT_ID'))));
 
     # Process Webhook Update
     $Bot->OnWebhookUpdate(file_get_contents('php://input'));

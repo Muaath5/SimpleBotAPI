@@ -22,7 +22,8 @@
     },
     "autoload": {
         "psr-4": {
-            "SimpleBotAPI\\": "src/"
+            "SimpleBotAPI\\": "src/",
+            "SimpleBotAPI\\Examples\\": "examples/"
         }
     }
 }

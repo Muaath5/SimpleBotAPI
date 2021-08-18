@@ -1,6 +1,7 @@
 <?php
 namespace SimpleBotAPI;
 
+use SimpleBotAPI\BotSettings;
 use SimpleBotAPI\UpdatesHandler;
 
 use SimpleBotAPI\TelegramException;
@@ -15,30 +16,27 @@ class TelegramBot
 {
     public const TIMEOUT = 63;
 
-    private string $Token = "";
-    private string $TelegramBotUrl = "";
-    private string $TelegramBotFileUrl = "";
+    private string $Token;
+
+    private BotSettings $Settings;
     
     private $curl;
     private ?UpdatesHandler $UpdatesHandler = null;
 
-    private ?int $LastUpdateID = null;
-
-    public function __construct(string $token, UpdatesHandler $updates_handler = null, string $api_host = 'https://api.telegram.org')
+    public function __construct(string $token, BotSettings $settings = null)
     {
-        if (preg_match('/^(\d+):[\w-]{30,}$/', $token, $matches) === 0) {
-            throw new \InvalidArgumentException('The supplied token does not look correct...');
+        if (preg_match('/^(\d+):[\w-]{30,}$/', $token, $matches) === 0)
+        {
+            throw new \InvalidArgumentException('Invalid bot token');
         }
 
         $this->Token = $token;
-        $this->TelegramBotUrl = "{$api_host}/bot{$this->Token}";
-        $this->TelegramBotFileUrl = "{$api_host}/file/bot{$this->Token}";
-        $this->UpdatesHandler = $updates_handler;
-        if (!empty($this->UpdatesHandler))
-        {
-            $this->UpdatesHandler->SetBot($this);
-        }
+        
+        $this->Settings = $settings ?? new BotSettings();
+        if (!empty($this->Settings->UpdatesHandler))
+            $this->Settings->UpdatesHandler->SetBot($this);
 
+        # Initializing cURL Requests
         $this->curl = curl_init();
         curl_setopt($this->curl, CURLOPT_POST, true);
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, ['Content-Type:multipart/form-data']);
@@ -48,66 +46,90 @@ class TelegramBot
 
     public function __destruct()
     {
+        if ($this->Settings->AutoHandleSettings)
+        {
+            $this->SaveSettings();
+        }
         curl_close($this->curl);
     }
 
-    public function SetUpdatesHandler(UpdatesHandler $new_updates_handler)
+    public function UpdateBotSettings(BotSettings $new_settings)
     {
-        $this->UpdatesHandler = $new_updates_handler;
-        $this->UpdatesHandler->SetBot($this);
+        $this->Settings = $new_settings;
+        if (!empty($this->Settings->UpdatesHandler))
+            $this->Settings->UpdatesHandler->SetBot($this);
     }
 
-    public function OnUpdate(object $update) : bool
+    protected function OnUpdate(object $update) : bool
     {
-        if (empty($this->UpdatesHandler))
+        if (empty($this->Settings->UpdatesHandler))
         {
-            throw new \BadFunctionCallException("TelegramBot->UpdatesHandler is null!", 400);
+            throw new \BadFunctionCallException("TelegramBot->BotSettings->UpdatesHandler is null!", 400);
         }
 
-        $this->LastUpdateID = $update->update_id;
+        if ($this->Settings->AutoHandleDuplicateUpdates)
+            $this->Settings->LastUpdateID = $update->update_id;
+
         switch ($update)
         {
             case property_exists($update, 'message'):
-                return $this->UpdatesHandler->MessageHandler($update->message);
+                return $this->Settings->UpdatesHandler->MessageHandler($update->message);
             
             case property_exists($update, 'edited_message'):
-                return $this->UpdatesHandler->EditedMessageHandler($update->edited_message);
+                return $this->Settings->UpdatesHandler->EditedMessageHandler($update->edited_message);
 
 
             case property_exists($update, 'channel_post'):
-                return $this->UpdatesHandler->ChannelPostHandler($update->channel_post);
+                return $this->Settings->UpdatesHandler->ChannelPostHandler($update->channel_post);
 
             case property_exists($update, 'edited_channel_post'):
-                return $this->UpdatesHandler->EditedChannelPostHandler($update->edited_channel_post);
+                return $this->Settings->UpdatesHandler->EditedChannelPostHandler($update->edited_channel_post);
 
 
             case property_exists($update, 'inline_query'):
-                return $this->UpdatesHandler->InlineQueryHandler($update->inline_query);
+                return $this->Settings->UpdatesHandler->InlineQueryHandler($update->inline_query);
 
             case property_exists($update, 'chosen_inline_query'):
-                return $this->UpdatesHandler->ChosenInlineQueryHandler($update->chosen_inline_query);
+                return $this->Settings->UpdatesHandler->ChosenInlineQueryHandler($update->chosen_inline_query);
 
 
             case property_exists($update, 'callback_query'):
-                return $this->UpdatesHandler->CallbackQueryHandler($update->callback_query);
+                return $this->Settings->UpdatesHandler->CallbackQueryHandler($update->callback_query);
 
 
             case property_exists($update, 'my_chat_member'):
-                return $this->UpdatesHandler->MyChatMemberHandler($update->my_chat_member);
+                return $this->Settings->UpdatesHandler->MyChatMemberHandler($update->my_chat_member);
 
             case property_exists($update, 'chat_member'):
-                return $this->UpdatesHandler->ChatMemberHandler($update->chat_member);
+                return $this->Settings->UpdatesHandler->ChatMemberHandler($update->chat_member);
 
 
             case property_exists($update, 'shipping_query'):
-                return $this->UpdatesHandler->ShippingQueryHandler($update->shipping_query);
+                return $this->Settings->UpdatesHandler->ShippingQueryHandler($update->shipping_query);
 
             case property_exists($update, 'pre_checkout_query'):
-                return $this->UpdatesHandler->PreCheckoutQueryHandler($update->pre_checkout_query);
+                return $this->Settings->UpdatesHandler->PreCheckoutQueryHandler($update->pre_checkout_query);
 
             default:
                 # Don't do anything, Only when Bot API version in later
                 return false;
+        }
+    }
+
+    public function SaveSettings()
+    {
+        $this->Settings->Export();
+    }
+
+    public function HandleUpdates(string $json_update = '') : bool
+    {
+        if ($this->Settings->ReceivingUpdatesType == 'long-polling')
+        {
+            return $this->ReceiveUpdates();
+        }
+        else
+        {
+            return $this->OnWebhookUpdate($json_update);
         }
     }
 
@@ -118,18 +140,41 @@ class TelegramBot
         return $this->OnUpdate($Update);
     }
 
-    public function ReceiveUpdates(array $allowed_updates = ['message', 'edited_message', 'callback_query', 'inline_query', 'my_chat_member'], int $limit = 0, int $timeout = TelegramBot::TIMEOUT)
+
+
+    public function ReceiveUpdates(int $limit = 100, int $offset = 0) : bool
     {
-        $updates = $this->GetUpdates([
-            'offset' => $this->LastUpdateID,
-            'timeout' => $timeout,
-            'limit' => $limit,
-            'allowed_updates' => $allowed_updates
-        ]);
-        foreach ($updates as $update)
+        if ($this->Settings->AutoHandleDuplicateUpdates)
         {
-            $this->OnUpdate($update);
+            # If sooner than 2 weeks
+            if ($this->Settings->LastUpdateDate < strtotime('-2 week'))
+            {
+                $offset = $this->Settings->LastUpdateID;
+            }
         }
+
+        $updates = $this->GetUpdates([
+            'limit' => $limit,
+            'offset' => $offset,
+            'timeout' => $this->Settings->UpdatesTimeout,
+            'allowed_updates' => json_encode($this->Settings->AllowedUpdates)
+        ]);
+        if (count($updates) > 0)
+        {
+            foreach ($updates as $update)
+            {
+                if ($update->update_id > $this->Settings->LastUpdateID)
+                {
+                    $this->OnUpdate($update);
+                }
+            }
+            
+            if ($this->Settings->AutoHandleDuplicateUpdates && count($updates))
+            {
+                $this->Settings->LastUpdateID = $updates[count($updates)-1]->update_id;
+            }
+        }
+        return true;
     }
 
     /**
@@ -152,7 +197,7 @@ class TelegramBot
      * @throws TelegramException, RuntimeException
      */
     public function __call(string $method, array $params) {
-        curl_setopt($this->curl, CURLOPT_URL, "{$this->TelegramBotUrl}/$method");
+        curl_setopt($this->curl, CURLOPT_URL, "{$this->Settings->APIHost}/bot{$this->Token}/$method");
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $params[0] ?? []);
 
         $result = curl_exec($this->curl);
@@ -160,16 +205,40 @@ class TelegramBot
             throw new \RuntimeException(curl_error($this->curl), curl_errno($this->curl));
         }
         $object = json_decode($result);
-        if (!$object->ok) {
-            if (property_exists($object, 'parameters')) {
-                if (property_exists($object->parameters, 'retry_after')) {
-                    throw new TelegramFloodException($object);
+        if (!$object->ok)
+        {
+            if (property_exists($object, 'parameters'))
+            {
+                if (property_exists($object->parameters, 'retry_after'))
+                {
+                    if ($this->Settings->AutoHandleFloodException)
+                    {
+                        usleep($object->parameters->retry_after * 1000000 + 1000000);
+                        # Recall same method
+                        $this->$method($params[0] ?? []);
+                    }
+                    else
+                    {
+                        throw new TelegramFloodException($object);
+                    }
                 }
-                if (property_exists($object->parameters, 'migrate_to_chat_id')) {
-                    throw new TelegramChatMigratedException($object);
+                if (property_exists($object->parameters, 'migrate_to_chat_id'))
+                {
+                    if ($this->Settings->AutoHandleChatMigratedException)
+                    {
+                        $params[0]['chat_id'] = $object->parameters->migrate_to_chat_id;
+                        $this->$method($params[0]);
+                    }
+                    else
+                    {
+                        throw new TelegramChatMigratedException($object);
+                    }
                 }
             }
-            throw new TelegramException($object);
+            else
+            {
+                throw new TelegramException($object);
+            }
         }
         return $object->result;
     }
