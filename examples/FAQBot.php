@@ -51,36 +51,22 @@ if (isset($_REQUEST['token']))
 class FAQBot extends UpdatesHandler
 {
     public array $Questions = [
-        'من أنا؟',
-        'من صنعك؟',
-        'لماذا أنت هنا؟',
-        'كلام فاضي',
-        'فاضي اثنين',
-        'برا! لا تجي هنا! (لا تضغط الزر؛ إلا إذا كنت <b>بُت</b>!)'
+        'What is SimpleBotAPI Library?',
+        'Why SimpleBotAPI Library?',
+        'Can I use SimpleBotAPI Library in long-polling?',
+        'How to install SimpleBotAPI?',
+        'Has SimpleBotAPI PHP Unit Tests?',
+        'What is the classes implemented in the Library?'
     ];
-    //     'What is SimpleBotAPI Library?',
-    //     'Why SimpleBotAPI Library?',
-    //     'Can I use SimpleBotAPI Library in long-polling?',
-    //     'How to install SimpleBotAPI?',
-    //     'Has SimpleBotAPI PHP Unit Tests?',
-    //     'What is the classes implemented in the Library?'
-    // ];
 
-    public array $Answers = [
-        'أنا <b>بُت</b>',
-        'صنعني صديقي <b>البُت</b>',
-        'لأن هذا المكان، هو المكان الرسمي لوجود <b>البُتات</b>',
-        'أوي',
-        'أسد',
-        'مرحبًا بك يا وزير <b>البُتات</b>، أنت الآن بُت رسميًا'
+    public array $Answers = [  
+        'It\'s a Bot API Library in PHP, Based on <i>cURL</i>, With code are updated, So you can use any method even library wasn\'t updated',
+        'Because it\' easy to install & use, Also it has full documentation & examples for almost everything!',
+        'Currently, No. But it\'ll be added in the next update',
+        'Via composer:\n<code>composer require muaath5/simple-bot-api</code>',
+        'Yes, It runs by GitHub workflow',
+        '<code>TelegramBot, UpdatesHandler, BotSettings, TelegramException, TelegramFloodException</code>, And <code>TelegramChatMigratedException</code>'
     ];
-    //     'It\'s a Bot API Library in PHP, Based on <i>cURL</i>, With code are updated, So you can use any method even library wasn\'t updated',
-    //     'Because it\' easy to install & use, Also it has full documentation & examples for almost everything!',
-    //     'Currently, No. But it\'ll be added in the next update',
-    //     'Via composer:\n<code>composer require muaath5/simple-bot-api</code>',
-    //     'Yes, It runs by GitHub workflow',
-    //     '<code>TelegramBot, UpdatesHandler, TelegramException, TelegramFloodException</code>, And <code>TelegramChatMigratedException</code>'
-    // ];
     
     public function __construct(array $questions = [], array $answers = [])
     {
