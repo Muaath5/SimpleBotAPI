@@ -68,7 +68,10 @@ class TelegramBot
         }
 
         if ($this->Settings->AutoHandleDuplicateUpdates)
+        {
             $this->Settings->LastUpdateID = $update->update_id;
+            $this->Settings->LastUpdateDate = time();
+        }
 
         switch ($update)
         {
@@ -119,18 +122,6 @@ class TelegramBot
     public function SaveSettings()
     {
         $this->Settings->Export();
-    }
-
-    public function HandleUpdates(string $json_update = '') : bool
-    {
-        if ($this->Settings->ReceivingUpdatesType == 'long-polling')
-        {
-            return $this->ReceiveUpdates();
-        }
-        else
-        {
-            return $this->OnWebhookUpdate($json_update);
-        }
     }
 
     public function OnWebhookUpdate(string $json_update) : bool
