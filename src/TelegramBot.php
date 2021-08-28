@@ -131,8 +131,6 @@ class TelegramBot
         return $this->OnUpdate($Update);
     }
 
-
-
     public function ReceiveUpdates(int $limit = 100, int $offset = 0) : bool
     {
         if ($this->Settings->AutoHandleDuplicateUpdates)

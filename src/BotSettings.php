@@ -2,13 +2,16 @@
 
 namespace SimpleBotAPI;
 
+use Prophecy\Doubler\ClassPatch\ReflectionClassNewInstancePatch;
 use SimpleBotAPI\UpdatesHandler;
 
 use function PHPUnit\Framework\throwException;
 
 class BotSettings
 {
+    public array $Constructor = [];
     public ?UpdatesHandler $UpdatesHandler = null;
+
     public string $ReceivingUpdatesType = 'webhook';
     public int $UpdatesTimeout = 1;
     public array $AllowedUpdates = ['message', 'edited_message', 'channel_post', 'edited_chanel_post', 'callback_query', 'inline_query', 'my_chat_member'];
@@ -22,16 +25,18 @@ class BotSettings
     
     public string $APIHost = 'https://api.telegram.org';
 
-    public string $SaveFilePath = '/';
+    public string $SaveFilePath = '';
 
     public function __construct(
         UpdatesHandler $updates_handler = null,
-        string $save_file_path = '/',
+        array $constructor = [],
+
+        bool $auto_handle_settings = false,
+        string $save_file_path = '',
         string $receiving_updates_type = 'webhook',
         int $updates_timeout = 1,
         array $allowed_updates = ['message', 'edited_message', 'channel_post', 'edited_chanel_post', 'callback_query', 'inline_query', 'my_chat_member'],
 
-        bool $auto_handle_settings = false,
         bool $auto_handle_duplicate_updates = true,
         bool $auto_handle_flood = true,
         bool $auto_handle_chat_migrated = true,
@@ -41,6 +46,8 @@ class BotSettings
     {
         # Bot updates
         $this->UpdatesHandler = $updates_handler;
+        $this->Constructor = $constructor;
+
         strtolower($receiving_updates_type);
         $this->ReceivingUpdatesType = ($receiving_updates_type == 'wiki' || $receiving_updates_type == 'long-polling' || $receiving_updates_type == 'getupdates' ? 'long-polling' : 'webhook');
         $this->AllowedUpdates = $allowed_updates;
@@ -57,7 +64,7 @@ class BotSettings
             throw new \InvalidArgumentException("API Host not found!");
         $this->APIHost = $api_host;
 
-        if (!file_exists($save_file_path))
+        if (!file_exists($save_file_path) && !empty($save_file_path))
             throw new \InvalidArgumentException("SaveFilePath not found!");
         $this->SaveFilePath = $save_file_path;
     }
@@ -70,11 +77,25 @@ class BotSettings
 
     public function Export(string $save_file_path = '')
     {
-        if ($save_file_path == '')
-            $save_file_path = $this->SaveFilePath;
-
         $data = json_decode(json_encode($this));
         $data->UpdatesHandler = get_class($this->UpdatesHandler);
+
+        if (empty($save_file_path))
+            $save_file_path = $this->SaveFilePath;
+        if (empty($save_file_path))
+        {
+            $namespaces = explode('\\', get_class($this->UpdatesHandler));
+            $save_file_path = dirname((new \ReflectionClass($data->UpdatesHandler))->getFileName()) . '/' . $namespaces[count($namespaces)-1] . 'Settings.json';
+        }
+
+
+        if (!file_exists($save_file_path))
+        {
+            $saveFile = fopen($save_file_path, 'w');
+            fclose($saveFile);
+        }
+
+        $data->SaveFilePath = $save_file_path;
         file_put_contents($save_file_path, json_encode($data, JSON_PRETTY_PRINT));
     }
 
@@ -92,13 +113,13 @@ class BotSettings
             throw new \InvalidArgumentException(sprintf('Inexistant class %s.', $className));
 
         $new = new $className();
-
+        $Constructor = $object->Constructor;
         foreach($object as $property => $value)
         {
             if ($property == 'UpdatesHandler')
             {
                 if (class_exists($value))
-                    $new->$property = new $value();
+                    $new->$property = (new \ReflectionClass($value))->newInstanceArgs($Constructor);
             }
             else
             {

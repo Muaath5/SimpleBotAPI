@@ -67,20 +67,22 @@ class FAQBot extends UpdatesHandler
         'Yes, It runs by GitHub workflow',
         '<code>TelegramBot, UpdatesHandler, BotSettings, TelegramException, TelegramFloodException</code>, And <code>TelegramChatMigratedException</code>'
     ];
+
+    public int $PagesCount = -1;
     
     public function __construct(array $questions = [], array $answers = [])
     {
         $this->Questions = $questions != [] ? $questions : $this->Questions;
         $this->Answers = $answers != [] ? $answers : $this->Answers;
+        $this->PagesCount = intdiv(count($this->Questions), 5) + (count($this->Questions) % 5 == 0 ? 0 : 1);
     }
 
     # Write the handler for updates that your bot needs
     public function MessageHandler(object $message): bool
     {
-        var_dump(json_encode($this->GetButtonsByPageID(0)));
         $this->Bot->SendMessage([
             'chat_id' => $message->chat->id,
-            'text' => 'These are FAQ Questions, Choose one from these questions to get answer',
+            'text' => "These are FAQ Questions, Choose one from these questions to get answer\n\n[Page 1/{$this->PagesCount}]",
             'reply_markup' => json_encode($this->GetButtonsByPageID(0))
         ]);
         return true;
@@ -93,11 +95,12 @@ class FAQBot extends UpdatesHandler
             $page_id = intval(substr($callback_query->data, 5, strlen($callback_query->data)));
             if (property_exists($callback_query, 'message'))
             {
+                $page_id++; // To make it one-based
                 $this->Bot->EditMessageText([
                     'chat_id' => $callback_query->message->chat->id,
                     'message_id' => $callback_query->message->message_id,
-                    'text' => 'These are FAQ Questions, Choose one from these questions to get answer',
-                    'reply_markup' => json_encode($this->GetButtonsByPageID($page_id))
+                    'text' => "These are FAQ Questions, Choose one from these questions to get answer\n\n[Page {$page_id}/{$this->PagesCount}]",
+                    'reply_markup' => json_encode($this->GetButtonsByPageID($page_id-1))
                 ]);
             }
         }
@@ -134,7 +137,8 @@ class FAQBot extends UpdatesHandler
 
     public function GetPageIDByAnswerID(int $answer_id) : int
     {
-        return ($answer_id / 5) + ($answer_id % 5 == 0 ? 0 : 1);
+        // Based-zero
+        return (($answer_id / 5) + ($answer_id % 5 == 0 ? 0 : 1)) - 1;
     }
 
     public function GetButtonsByPageID(int $page_id = 0) : array
@@ -148,15 +152,13 @@ class FAQBot extends UpdatesHandler
         }
         
 
-        $pages_count = intdiv(count($this->Questions), 5) + (count($this->Questions) % 5 == 0 ? 0 : 1);
-        var_dump("Pages count: $pages_count");
         if ($page_id == 0)
         {
             array_push($buttons['inline_keyboard'], [['text' => '==>', 'callback_data' => 'page_1']]);
         }
-        else if ($page_id == $pages_count-1)
+        else if ($page_id == $this->PagesCount-1)
         {
-            array_push($buttons['inline_keyboard'], [['text' => '<==', 'callback_data' => 'page_' . $pages_count-2]]);
+            array_push($buttons['inline_keyboard'], [['text' => '<==', 'callback_data' => 'page_' . $page_id-1]]);
         }
         else
         {
@@ -184,7 +186,9 @@ class FAQBot extends UpdatesHandler
         }
 
         $this->Bot->AnswerInlineQuery([
-            'inline_query_id' => $inline_query->id
+            'inline_query_id' => $inline_query->id,
+            'results' => $results,
+            'cache_time' => 5000
         ]);
         return true;
     }
