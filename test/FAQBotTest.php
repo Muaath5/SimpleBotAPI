@@ -14,15 +14,15 @@ final class FAQBotTest extends TestCase
 {
     public function testRun() : void
     {
-        if (false)
+        if (true)
         {
-            $Bot = new TelegramBot(getenv('TEST_BOT_TOKEN'), BotSettings::Import(dirname(__DIR__) . '/examples/FAQBotSettings.json'));
+            $Bot = new TelegramBot(getenv('TEST_BOT_TOKEN'), new BotSettings(new FAQBot()));
             
             $Bot->SendMessage([
                 'chat_id' => 1265170068,
                 'text' => 'FAQBotTest.php started!'
             ]);
-            $stop_time = strtotime('+10 seconds');
+            $stop_time = strtotime('+7 minutes');
             while (time() < $stop_time)
             {
                 $Bot->ReceiveUpdates();
