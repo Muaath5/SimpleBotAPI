@@ -43,67 +43,66 @@ class ContactMeBot extends UpdatesHandler
     public function MessageHandler(object $message): bool
     {
         # The bot class will be stored in $this->Bot
-        if (property_exists($message, 'text'))
+        
+        $is_admin = ($message->chat->type == 'channel' && $message->chat->id == $this->MessagesChatID);
+        if (property_exists($message, 'from'))
         {
-            $is_admin = ($message->chat->type == 'channel' && $message->chat->id == $this->MessagesChatID);
-            if (property_exists($message, 'from'))
+            $is_admin = $is_admin || in_array($message->from->id, $this->BotAdmins);
+        }
+        printf(json_encode($message, JSON_PRETTY_PRINT));
+        # If admin
+        if ($is_admin)
+        {
+            if (property_exists($message, 'reply_to_message'))
             {
-                $is_admin = $is_admin || in_array($message->from->id, $this->BotAdmins);
-            }
-            # If admin
-            if ($is_admin)
-            {
-                if (property_exists($message, 'reply_to_message'))
+                if (property_exists($message->reply_to_message, 'reply_markup'))
                 {
-                    if (property_exists($message->reply_to_message, 'reply_markup'))
-                    {
 
-                        $reply_chat_id = intval($message->reply_to_message->reply_markup->inline_keyboard[0][0]->text);
-                        $reply_message_id = intval($message->reply_to_message->reply_markup->inline_keyboard[1][0]->text);
-                        
-                        if (property_exists($message, 'sticker'))
-                        {
-                            var_dump("This message is sticker of type {$message->sticker->emoji} contains reply_to_message with needed info!");
-                        }
+                    $reply_chat_id = intval($message->reply_to_message->reply_markup->inline_keyboard[0][0]->text);
+                    $reply_message_id = intval($message->reply_to_message->reply_markup->inline_keyboard[1][0]->text);
+                    
+                    
 
 
-                        $result = $this->Bot->CopyMessage([
-                            'from_chat_id' => $message->chat->id,
-                            'message_id' => $message->message_id,
-                            'chat_id' => $reply_chat_id,
-                            'allow_sending_without_reply' => true,
-                            'caption' => $message->caption ?? null,
-                            'caption_entities' => $message->caption_entities ?? null,
-                            'reply_to_message_id' => $reply_message_id
-                        ]);
+                    $result = $this->Bot->CopyMessage([
+                        'from_chat_id' => $message->chat->id,
+                        'message_id' => $message->message_id,
+                        'chat_id' => $reply_chat_id,
+                        'allow_sending_without_reply' => true,
+                        'caption' => $message->caption ?? null,
+                        'caption_entities' => $message->caption_entities ?? null,
+                        'reply_to_message_id' => $reply_message_id
+                    ]);
 
-                        var_dump("To chat ID: $reply_chat_id, Result ID $result->message_id");
-                    }
-                    else
-                    {
-                        $this->Bot->SendMessage([
-                            'chat_id' => $this->MessagesChatID,
-                            'text' => 'You should reply on on of the existing messages from users that <b>Contains</b> Buttons!',
-                            'parse_mode' => 'HTML'
-                        ]);    
-                    }
+                    printf("To chat ID: $reply_chat_id, Result ID $result->message_id, From message {$message->chat->id}:{$message->message_id}");
                 }
                 else
                 {
                     $this->Bot->SendMessage([
                         'chat_id' => $this->MessagesChatID,
-                        'text' => 'You should reply on on of the existing messages from users!'
-                    ]);
+                        'text' => 'You should reply on on of the existing messages from users that <b>Contains</b> Buttons!',
+                        'parse_mode' => 'HTML'
+                    ]);    
                 }
             }
-
+            else
+            {
+                $this->Bot->SendMessage([
+                    'chat_id' => $this->MessagesChatID,
+                    'text' => 'You should reply on on of the existing messages from users!'
+                ]);
+            }
+        }
+        
+        if (property_exists($message, 'text'))
+        {
             # Commands
             if ($message->text[0] == '/')
             {
                 switch ($message->text)
                 {
                     case '/start':
-                        var_dump($this->Bot->SendMessage([
+                        $this->Bot->SendMessage([
                             'chat_id' => $message->chat->id,
                             'text' => 'Send message to contact with Test bot creator',
                             'reply_to_message_id' => $message->message_id,
@@ -112,7 +111,7 @@ class ContactMeBot extends UpdatesHandler
                                 'input_field_placeholder' => 'Contact Me!',
                                 'selective' => true
                             ])
-                        ]));
+                        ]);
                         break;
 
                     default:
@@ -123,7 +122,7 @@ class ContactMeBot extends UpdatesHandler
                         break;
                 }
             }
-            else if ($message->chat->id != $this->MessagesChatID && property_exists($message, 'reply_to_message') && $message->reply_to_message->from->is_bot == true)
+            else if ($message->chat->id != $this->MessagesChatID)
             {
                 
                 # Copy message to the owner of the bot
@@ -136,20 +135,14 @@ class ContactMeBot extends UpdatesHandler
                     'reply_markup' => json_encode(['inline_keyboard' => [
                         [
                             [
-                                'text' => $message->chat->id,
-                                'callback_data' => "info_{$message->chat->id}"
+                                'text' => $message->from->id,
+                                'callback_data' => "info_{$message->from->id}"
                             ]
                         ],
                         [
                             [
                                 'text' => $message->message_id,
                                 'url' => 'https://google.com'
-                            ]
-                        ],
-                        [
-                            [
-                                'text' => $message->from->id,
-                                'callback_data' => "info_{$message->from->id}"
                             ]
                         ],
                         [

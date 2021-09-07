@@ -12,7 +12,7 @@ final class ContactMeBotTest extends TestCase
 {
     public function testRun() : void
     {
-        if (false)
+        if (true)
         {
             $Bot = new TelegramBot(getenv('TEST_BOT_TOKEN'), new BotSettings(new ContactMeBot(1265170068, [1265170068])));
             
