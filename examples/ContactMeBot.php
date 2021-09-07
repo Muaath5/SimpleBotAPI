@@ -60,11 +60,8 @@ class ContactMeBot extends UpdatesHandler
 
                     $reply_chat_id = intval($message->reply_to_message->reply_markup->inline_keyboard[0][0]->text);
                     $reply_message_id = intval($message->reply_to_message->reply_markup->inline_keyboard[1][0]->text);
-                    
-                    
 
-
-                    $result = $this->Bot->CopyMessage([
+                    $this->Bot->CopyMessage([
                         'from_chat_id' => $message->chat->id,
                         'message_id' => $message->message_id,
                         'chat_id' => $reply_chat_id,
@@ -73,8 +70,6 @@ class ContactMeBot extends UpdatesHandler
                         'caption_entities' => $message->caption_entities ?? null,
                         'reply_to_message_id' => $reply_message_id
                     ]);
-
-                    printf("To chat ID: $reply_chat_id, Result ID $result->message_id, From message {$message->chat->id}:{$message->message_id}");
                 }
                 else
                 {
@@ -93,7 +88,7 @@ class ContactMeBot extends UpdatesHandler
                 ]);
             }
         }
-        
+
         if (property_exists($message, 'text'))
         {
             # Commands

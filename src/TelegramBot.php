@@ -154,9 +154,6 @@ class TelegramBot
             {
                 if ($update->update_id > $this->Settings->LastUpdateID)
                 {
-                    $array = json_decode(file_get_contents('/home/muaath/logs/TestContactBotLog.json'));
-                    array_push($array, $update);
-                    file_put_contents('/home/muaath/logs/TestContactBotLog.json', json_encode($array, JSON_PRETTY_PRINT));
                     $this->OnUpdate($update);
                 }
             }
