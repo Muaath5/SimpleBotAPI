@@ -10,14 +10,16 @@ This Library should support all Bot API versions in methods.
 
 ## Features
 - Supports all Bot API methods without needing to update.
-- Has updates handler which makes handling updates easier
+- Can Auto handle for flood errors
+- Uses stdClass for updates.
+- Using OOP.
+- Settings for each bot.
 - Based on cURL.
 - Downloadable via composer.
-- Has tests which ensure that everything work.
-- GitHub Actions.
+- Tests in GitHub Actions.
 - Has examples of some made bots.
 - Full Documented.
-- Has exceptions that make it easy to handle it.
+- Telegram Errors as PHP Exceptions.
 - Up to date.
 
 ## Installation
@@ -105,8 +107,17 @@ $success = $Bot->OnWebhookUpdate(file_get_contents('php://input'));
 `$success` will be boolean, So you can log or add to your statistics count of fails for the bot.
 
 #### Long-polling (getUpdates)
+If you want Long-polling that stops after sometime:
 ```php
-while (time() < strtotime('+10 minutes'))
+$stop_time = strtotime('+10 minutes');
+while (time() < $stop_time)
+{
+    $Bot->ReceiveUpdates();
+}
+```
+Or runs forever:
+```php
+while (true)
 {
     $Bot->ReceiveUpdates();
 }
@@ -117,10 +128,11 @@ You can contribute by:
 - Report a bug.
 - Suggest a feature.
 - Improve code via Pull request.
+- Completing the TODO List via Pull Request.
 - Adding more examples to `examples/` via Pull request.
-- Adding documentation for the library.
+- Documenting the library.
 - Updating the library to the next version of Bot API.
-- Adding more tests in `test/` folder
+- Adding more tests in `test/` folder.
 
 ## Contact me
 - Telegram: [@Muaath_5](https://t.me/Muaath_5) [Suggested]
@@ -136,7 +148,11 @@ Currently, There're three examples in `examples/` folder:
 All of these examples doesn't need any databases or files to storage, Only Settings file.
 
 ## Todo
-- Add ability to create UpdatesHandler form settings with taking care of constructor
+- [x] Add ability to create UpdatesHandler form settings with taking care of constructor
+- [ ] Add JSON Storage can be used by bot
+- [ ] Add DB Storage can be used by bot
+- [ ] Auto-store for bot users
+- [ ] Method that posts to all bot users
 
 ## License
 GPL 3.0 only

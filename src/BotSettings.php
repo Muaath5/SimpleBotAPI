@@ -35,7 +35,7 @@ class BotSettings
         string $save_file_path = '',
         string $receiving_updates_type = 'webhook',
         int $updates_timeout = 1,
-        array $allowed_updates = ['message', 'edited_message', 'channel_post', 'edited_chanel_post', 'callback_query', 'inline_query', 'my_chat_member'],
+        array $allowed_updates = ['message', 'edited_message', 'channel_post', 'edited_channel_post', 'callback_query', 'inline_query', 'my_chat_member'],
 
         bool $auto_handle_duplicate_updates = true,
         bool $auto_handle_flood = true,
