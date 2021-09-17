@@ -2,15 +2,9 @@
 
 namespace SimpleBotAPI;
 
-use Prophecy\Doubler\ClassPatch\ReflectionClassNewInstancePatch;
-use SimpleBotAPI\UpdatesHandler;
-
-use function PHPUnit\Framework\throwException;
-
 class BotSettings
 {
     public array $Constructor = [];
-    public ?UpdatesHandler $UpdatesHandler = null;
 
     public string $ReceivingUpdatesType = 'webhook';
     public int $UpdatesTimeout = 1;
@@ -22,15 +16,15 @@ class BotSettings
     public bool $AutoHandleDuplicateUpdates = true;
     public bool $AutoHandleFloodException = true;
     public bool $AutoHandleChatMigratedException = true;
+    # TODO: Auto handle
+    // public bool $AutoHandleInlineQueries = false;
+    // public bool $AutoHandleCallbackQueries = false;
     
     public string $APIHost = 'https://api.telegram.org';
 
     public string $SaveFilePath = '';
 
     public function __construct(
-        UpdatesHandler $updates_handler = null,
-        array $constructor = [],
-
         bool $auto_handle_settings = false,
         string $save_file_path = '',
         string $receiving_updates_type = 'webhook',
@@ -44,9 +38,6 @@ class BotSettings
         string $api_host = 'https://api.telegram.org'
     )
     {
-        # Bot updates
-        $this->UpdatesHandler = $updates_handler;
-        $this->Constructor = $constructor;
 
         strtolower($receiving_updates_type);
         $this->ReceivingUpdatesType = ($receiving_updates_type == 'wiki' || $receiving_updates_type == 'long-polling' || $receiving_updates_type == 'getupdates' ? 'long-polling' : 'webhook');
@@ -113,18 +104,9 @@ class BotSettings
             throw new \InvalidArgumentException(sprintf('Inexistant class %s.', $className));
 
         $new = new $className();
-        $Constructor = $object->Constructor;
         foreach($object as $property => $value)
         {
-            if ($property == 'UpdatesHandler')
-            {
-                if (class_exists($value))
-                    $new->$property = (new \ReflectionClass($value))->newInstanceArgs($Constructor);
-            }
-            else
-            {
-                $new->$property = $value;
-            }
+            $new->$property = $value;
             unset($object->$property);
         }
         unset($value);

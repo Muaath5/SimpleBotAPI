@@ -1,6 +1,7 @@
 <?php
 namespace SimpleBotAPI;
 
+use InvalidArgumentException;
 use SimpleBotAPI\BotSettings;
 use SimpleBotAPI\UpdatesHandler;
 
@@ -18,23 +19,25 @@ class TelegramBot
 
     private string $Token;
 
-    private BotSettings $Settings;
+    public BotSettings $Settings;
     
     private $curl;
     private ?UpdatesHandler $UpdatesHandler = null;
 
-    public function __construct(string $token, BotSettings $settings = null)
+    public function __construct(string $token, UpdatesHandler $updatesHandler, BotSettings $settings = null)
     {
+        # Check if token is match Regex format
         if (preg_match('/^(\d+):[\w-]{30,}$/', $token, $matches) === 0)
         {
-            throw new \InvalidArgumentException('Invalid bot token');
+            throw new TelegramUnauthorizedException('Invalid Bot Token');
         }
 
         $this->Token = $token;
         
+        $this->UpdatesHandler = $updatesHandler;
         $this->Settings = $settings ?? new BotSettings();
-        if (!empty($this->Settings->UpdatesHandler))
-            $this->Settings->UpdatesHandler->SetBot($this);
+
+        $this->UpdatesHandler->SetBot($this);
 
         # Initializing cURL Requests
         $this->curl = curl_init();
@@ -53,18 +56,16 @@ class TelegramBot
         curl_close($this->curl);
     }
 
-    public function UpdateBotSettings(BotSettings $new_settings)
+    public function SetUpdatesHandler(BotSettings $new_settings)
     {
         $this->Settings = $new_settings;
-        if (!empty($this->Settings->UpdatesHandler))
-            $this->Settings->UpdatesHandler->SetBot($this);
     }
 
-    protected function OnUpdate(object $update) : bool
+    protected function OnUpdate(\stdClass $update) : bool
     {
         if (empty($this->Settings->UpdatesHandler))
         {
-            throw new \BadFunctionCallException("TelegramBot->BotSettings->UpdatesHandler is null!", 400);
+            throw new InvalidArgumentException("This bot can't handle updates");
         }
 
         if ($this->Settings->AutoHandleDuplicateUpdates)
@@ -138,7 +139,7 @@ class TelegramBot
             # If sooner than 2 weeks
             if ($this->Settings->LastUpdateDate < strtotime('-2 week'))
             {
-                $offset = $this->Settings->LastUpdateID;
+                $offset = $this->Settings->LastUpdateID + 1;
             }
         }
 
@@ -177,15 +178,26 @@ class TelegramBot
         file_put_contents($save_path, file_get_contents("{$this->TelegramBotFileUrl}/{$file->file_path}"));
     }
 
+    public function WebhookResponse(string $method, array $params = []) : void
+    {
+        $params['method'] = $method;
+
+        $payload = json_encode($params);
+        header('Content-Type: application/json');
+        header('Content-Length: ' . strlen($payload));
+        echo $payload;
+    }
+
     /**
      * Template function to make API calls using method name and array of parameters
      *
      * @param string $method The method name from https://core.telegram.org/bots/api
      * @param array $params The arguments of the method, as an array
-     * @return stdClass|bool
-     * @throws TelegramException, RuntimeException
+     * @return stdClass|bool|string|int|float
+     * @throws TelegramException,\RuntimeException
      */
-    public function __call(string $method, array $params) {
+    public function __call(string $method, array $params) : mixed
+    {
         curl_setopt($this->curl, CURLOPT_URL, "{$this->Settings->APIHost}/bot{$this->Token}/$method");
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $params[0] ?? []);
 

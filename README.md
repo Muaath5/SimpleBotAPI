@@ -37,6 +37,14 @@ Or Download `src/` folder and require it in your code.
 
 ## Usage
 
+### Creating bot
+```php
+use SimpleBotAPI/TelegramBot;
+use SimpleBotAPI/BotSettings;
+
+$Bot = new TelegramBot('bot_token', new BotSettings(new MyUpdatesHandler()));
+```
+
 ### Using method
 It should be in this format:
 ```
@@ -49,21 +57,17 @@ $Result = $Bot->{methodName}([
 Like this:
 ```php
 $Bot->SendMessage([
-    'chat_id' => '@Muaath_Alqarni',
-    'text' => 'Some post..'
+    'chat_id' => '@MuaathBots',
+    'text' => 'This post was sent by the bot..'
 ]);
 
 $my_channel_info = $Bot->getChat([
-    'chat_id' => '@Muaath_Alqarni',
+    'chat_id' => '@MuaathBots',
 ]);
+echo "Your channel (@$my_channel_info->username) ID: {$my_channel_info->id}";
 ```
 
-The method has no problem if it was upper or lower case.
-
-### Creating bot
-```php
-$Bot = new TelegramBot('bot_token', new BotSettings(new MyUpdatesHandler()));
-```
+**Note:** There's no problem if `methodName` was in upper or lower case.
 
 ### Bot Settings
 I've added `BotSettings` for two reasons:
@@ -71,13 +75,12 @@ I've added `BotSettings` for two reasons:
 2. Save your bot from duplicate, And not needed updates
 
 Bot Settings feature:
-- Auto handle flood exception
-- Auto handle chat-migrated exception
-- Auto handle for duplicate updates
+- Auto handle flood exception.
+- Auto handle chat-migrated exception.
+- Auto handle for duplicate updates.
 - Auto handle for settings.
 - Allowing only some updates.
-- Add Updates timeout if you're using long-polling
-- Add your Bot Updates Handler class.
+- Add Updates timeout if you're using long-polling.
 
 #### Importing Bot Settings
 ```php
@@ -148,7 +151,8 @@ Currently, There're three examples in `examples/` folder:
 All of these examples doesn't need any databases or files to storage, Only Settings file.
 
 ## Todo
-- [x] Add ability to create UpdatesHandler form settings with taking care of constructor
+- [x] API via HTTP responsee in webhooks method
+- [ ] Auto handle for `callback_query` & `inline_query`
 - [ ] Add JSON Storage can be used by bot
 - [ ] Add DB Storage can be used by bot
 - [ ] Auto-store for bot users
