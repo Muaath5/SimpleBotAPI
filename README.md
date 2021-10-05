@@ -25,7 +25,7 @@ This Library should support all Bot API versions in methods.
 ## Installation
 
 ### Prerequists
-- PHP 8.0 Or Higher
+- PHP 7.0 Or Higher
 - cURL PHP extension enabled
 
 ### Installing
@@ -42,7 +42,7 @@ Or Download `src/` folder and require it in `composer.json`
 use SimpleBotAPI/TelegramBot;
 use SimpleBotAPI/BotSettings;
 
-$Bot = new TelegramBot('bot_token', new BotSettings(new MyUpdatesHandler()));
+$Bot = new TelegramBot('bot_token', new MyUpdatesHandler());
 ```
 
 ### Using method
