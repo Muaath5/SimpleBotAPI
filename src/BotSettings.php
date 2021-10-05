@@ -2,15 +2,19 @@
 
 namespace SimpleBotAPI;
 
+use Exception;
+
 class BotSettings
 {
-    public array $Constructor = [];
-
     public string $ReceivingUpdatesType = 'webhook';
-    public int $UpdatesTimeout = 1;
+
     public array $AllowedUpdates = ['message', 'edited_message', 'channel_post', 'edited_chanel_post', 'callback_query', 'inline_query', 'my_chat_member'];
+    public int $UpdatesTimeout = 1;
     public int $LastUpdateID = 0;
     public int $LastUpdateDate = 0;
+
+    // TODO: Add in the next update..
+    public bool $UpdateAuthorization = false;
 
     public bool $AutoHandleSettings = false;
     public bool $AutoHandleDuplicateUpdates = true;
@@ -27,7 +31,6 @@ class BotSettings
     public function __construct(
         bool $auto_handle_settings = false,
         string $save_file_path = '',
-        string $receiving_updates_type = 'webhook',
         int $updates_timeout = 1,
         array $allowed_updates = ['message', 'edited_message', 'channel_post', 'edited_channel_post', 'callback_query', 'inline_query', 'my_chat_member'],
 
@@ -38,9 +41,21 @@ class BotSettings
         string $api_host = 'https://api.telegram.org'
     )
     {
+        // TODO in next update..
+        /*
+        if (!empty($save_file_path))
+        {
+            if (!empty($save_file_path))
+            {
+                $importedSettings = BotSettings::Import($save_file_path);
+            }
+            else
+            {
+                $importedSettings = new BotSettings();
+            }
+        }
+        */
 
-        strtolower($receiving_updates_type);
-        $this->ReceivingUpdatesType = ($receiving_updates_type == 'wiki' || $receiving_updates_type == 'long-polling' || $receiving_updates_type == 'getupdates' ? 'long-polling' : 'webhook');
         $this->AllowedUpdates = $allowed_updates;
         $this->UpdatesTimeout = $updates_timeout;
 
@@ -53,10 +68,9 @@ class BotSettings
         # API Host
         if (filter_var($api_host, FILTER_VALIDATE_URL) === false)
             throw new \InvalidArgumentException("API Host not found!");
+        
         $this->APIHost = $api_host;
-
-        if (!file_exists($save_file_path) && !empty($save_file_path))
-            throw new \InvalidArgumentException("SaveFilePath not found!");
+        
         $this->SaveFilePath = $save_file_path;
     }
 
@@ -69,22 +83,15 @@ class BotSettings
     public function Export(string $save_file_path = '')
     {
         $data = json_decode(json_encode($this));
-        $data->UpdatesHandler = get_class($this->UpdatesHandler);
 
         if (empty($save_file_path))
-            $save_file_path = $this->SaveFilePath;
-        if (empty($save_file_path))
         {
-            $namespaces = explode('\\', get_class($this->UpdatesHandler));
-            $save_file_path = dirname((new \ReflectionClass($data->UpdatesHandler))->getFileName()) . '/' . $namespaces[count($namespaces)-1] . 'Settings.json';
+            if (!empty($this->SaveFilePath))
+                $save_file_path = $this->SaveFilePath;
+            else
+                throw new \InvalidArgumentException('$saved_file_path variable is empty');
         }
 
-
-        if (!file_exists($save_file_path))
-        {
-            $saveFile = fopen($save_file_path, 'w');
-            fclose($saveFile);
-        }
 
         $data->SaveFilePath = $save_file_path;
         file_put_contents($save_file_path, json_encode($data, JSON_PRETTY_PRINT));
@@ -101,7 +108,7 @@ class BotSettings
     private static function Recast(string $className, \stdClass &$object)
     {
         if (!class_exists($className))
-            throw new \InvalidArgumentException(sprintf('Inexistant class %s.', $className));
+            throw new \InvalidArgumentException("Inexistant class {$className}");
 
         $new = new $className();
         foreach($object as $property => $value)

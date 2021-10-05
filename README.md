@@ -33,9 +33,9 @@ Install it via composer:
 ```sh
 composer require muaath5/simple-bot-api
 ```
-Or Download `src/` folder and require it in your code.
+Or Download `src/` folder and require it in `composer.json`
 
-## Usage
+## Simple Usage
 
 ### Creating bot
 ```php
@@ -67,73 +67,16 @@ $my_channel_info = $Bot->getChat([
 echo "Your channel (@$my_channel_info->username) ID: {$my_channel_info->id}";
 ```
 
-**Note:** There's no problem if `methodName` was in upper or lower case.
-
-### Bot Settings
-I've added `BotSettings` for two reasons:
-1. Add ability to auto-handle for exceptions
-2. Save your bot from duplicate, And not needed updates
-
-Bot Settings feature:
-- Auto handle flood exception.
-- Auto handle chat-migrated exception.
-- Auto handle for duplicate updates.
-- Auto handle for settings.
-- Allowing only some updates.
-- Add Updates timeout if you're using long-polling.
-
-#### Importing Bot Settings
-```php
-$Settings = BotSettings::Import('/home/main/bots/MyBot/MyBotSettings.json');
-```
-
-#### Exporting Bot Settings
-```php
-$Settings->Export('/home/main/bots/MyBot/MyBotSettings.json');
-```
-Or you can **not specify** path, So it'll be created in the folder your UpdatesHandler was there, And with name: `{YourUpdatesHandlerName}Settings.json`
-```php
-$Settings->Export();
-```
-
-#### Auto manage for Bot Settings Export
-```php
-$Settings->AutoManageSettings = true;
-```
-
-
-### Receiving updates
-#### Webhook
-```php
-$success = $Bot->OnWebhookUpdate(file_get_contents('php://input'));
-```
-`$success` will be boolean, So you can log or add to your statistics count of fails for the bot.
-
-#### Long-polling (getUpdates)
-If you want Long-polling that stops after sometime:
-```php
-$stop_time = strtotime('+10 minutes');
-while (time() < $stop_time)
-{
-    $Bot->ReceiveUpdates();
-}
-```
-Or runs forever:
-```php
-while (true)
-{
-    $Bot->ReceiveUpdates();
-}
-```
+**Note:** There's NO PROBLEM if `methodName` was in upper or lower case.
 
 ## Contibuting
 You can contribute by:
-- Report a bug.
-- Suggest a feature.
-- Improve code via Pull request.
-- Completing the TODO List via Pull Request.
-- Adding more examples to `examples/` via Pull request.
-- Documenting the library.
+- Reporting a bug.
+- Suggesting a feature.
+- Improving code.
+- Completing the TODO List.
+- Adding more examples to `examples/`.
+- Documenting undocumented things in `docs/`.
 - Updating the library to the next version of Bot API.
 - Adding more tests in `test/` folder.
 
@@ -148,10 +91,12 @@ Currently, There're three examples in `examples/` folder:
 - Contact Me Bot, Which is a Bot be same as you, You'll receive messages & Reply
 - FAQ Bot, Which has one message & buttons to swap between questions, And you can see answers. Also you can search any question in Inline mode.
 
-All of these examples doesn't need any databases or files to storage, Only Settings file.
+**All of these examples doesn't need any databases or files to storage, Only Settings file.**
 
-## Todo
-- [x] API via HTTP responsee in webhooks method
+## TODO List
+- [x] API via HTTP response in webhooks method
+- [x] Using namespace for exceptions.
+- [ ] Documenting sending message with reply markup.
 - [ ] Auto handle for `callback_query` & `inline_query`
 - [ ] Add JSON Storage can be used by bot
 - [ ] Add DB Storage can be used by bot
@@ -159,4 +104,4 @@ All of these examples doesn't need any databases or files to storage, Only Setti
 - [ ] Method that posts to all bot users
 
 ## License
-GPL 3.0 only
+GPL-3.0, In LICENCE file.

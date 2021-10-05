@@ -1,7 +1,7 @@
 <?php
-namespace SimpleBotAPI;
+namespace SimpleBotAPI\Exceptions;
 
-use SimpleBotAPI\TelegramException;
+use SimpleBotAPI\Exceptions\TelegramException;
 
 /**
  * @version Bot API 5.3

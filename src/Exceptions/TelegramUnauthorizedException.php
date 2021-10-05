@@ -1,8 +1,8 @@
 <?php
 
-namespace SimpleBotAPI;
+namespace SimpleBotAPI\Exceptions;
 
-use SimpleBotAPI\TelegramException;
+use SimpleBotAPI\Exceptions\TelegramException;
 
 class TelegramUnauthorizedException extends TelegramException
 {

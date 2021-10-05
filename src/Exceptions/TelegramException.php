@@ -1,6 +1,6 @@
 <?php
 
-namespace SimpleBotAPI;
+namespace SimpleBotAPI\Exceptions;
 
 /**
  * Telegram Bot API Exception

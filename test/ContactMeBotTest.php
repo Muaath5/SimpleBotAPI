@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 use PHPUnit\Framework\TestCase;
-use SimpleBotAPI\BotSettings;
 use SimpleBotAPI\Examples\ContactMeBot;
 use SimpleBotAPI\TelegramBot;
 
@@ -12,24 +11,22 @@ final class ContactMeBotTest extends TestCase
 {
     public function testRun() : void
     {
-        if (true)
+        $this->assertNotFalse(getenv('TEST_BOT_TOKEN'), 'TEST_BOT_TOKEN Environment variable is empty');
+        $Bot = new TelegramBot(getenv('TEST_BOT_TOKEN'), new ContactMeBot(1265170068, [1265170068]));
+        
+        $Bot->SendMessage([
+            'chat_id' => 1265170068,
+            'text' => 'ContactMeBotTest.php started!'
+        ]);
+        $stop_time = strtotime('+5 minutes');
+        while (time() < $stop_time)
         {
-            $Bot = new TelegramBot(getenv('TEST_BOT_TOKEN'), new BotSettings(new ContactMeBot(1265170068, [1265170068])));
-            
-            $Bot->SendMessage([
-                'chat_id' => 1265170068,
-                'text' => 'ContactMeBotTest.php started!'
-            ]);
-            $stop_time = strtotime('+7 minutes');
-            while (time() < $stop_time)
-            {
-                $Bot->ReceiveUpdates();
-            }
-            $Bot->SendMessage([
-                'chat_id' => 1265170068,
-                'text' => 'ContactMeBotTest.php was stopped..'
-            ]);
+            $Bot->ReceiveUpdates();
         }
+        $Bot->SendMessage([
+            'chat_id' => 1265170068,
+            'text' => 'ContactMeBotTest.php was stopped..'
+        ]);
 
         $this->assertEquals(true, true);
     }

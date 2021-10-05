@@ -23,7 +23,7 @@ if (isset($_REQUEST['token']))
 {
     if ($_REQUEST['token'] == getenv('BOT_TOKEN'))
     {
-        $Bot = new TelegramBot(getenv('BOT_TOKEN'), new BotSettings(new FAQBot(
+        $Bot = new TelegramBot(getenv('BOT_TOKEN'), new FAQBot(
                 [
                     'What is SimpleBotAPI Library?',
                     'Why SimpleBotAPI Library?',
@@ -40,7 +40,7 @@ if (isset($_REQUEST['token']))
                     'Yes, It runs by GitHub workflow',
                     '<code>TelegramBot, UpdatesHandler, TelegramException, TelegramFloodException</code>, And <code>TelegramChatMigratedException</code>'
                 ]
-            ))
+            )
         );
 
         # Process Webhook Update
@@ -95,7 +95,7 @@ class FAQBot extends UpdatesHandler
             $page_id = intval(substr($callback_query->data, 5, strlen($callback_query->data)));
             if (property_exists($callback_query, 'message'))
             {
-                $page_id++; // To make it one-based
+                $page_id += 1; // To make it one-based, For
                 $this->Bot->EditMessageText([
                     'chat_id' => $callback_query->message->chat->id,
                     'message_id' => $callback_query->message->message_id,
@@ -138,6 +138,10 @@ class FAQBot extends UpdatesHandler
     public function GetPageIDByAnswerID(int $answer_id) : int
     {
         // Based-zero
+        if ($answer_id == 0)
+        {
+            return 0; // The first page
+        }
         return (($answer_id / 5) + ($answer_id % 5 == 0 ? 0 : 1)) - 1;
     }
 
