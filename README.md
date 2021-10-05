@@ -24,10 +24,10 @@ This Library should support all Bot API versions in methods.
 
 ## Installation
 
+More documentation is [here](https://muaath5.github.io/SimpleBotAPI/Installation)
+
 ### Prerequists
 - cURL PHP extension enabled
-#### Suggestions
-- PHP 7.4 as minimum
 
 ### Installing
 Install it via composer:
@@ -37,14 +37,14 @@ composer require muaath5/simple-bot-api
 Or Download `src/` folder and require it in `composer.json`
 
 ## Simple Usage
-
 ### Creating bot
 ```php
 use SimpleBotAPI/TelegramBot;
 use SimpleBotAPI/BotSettings;
 
-$Bot = new TelegramBot('bot_token', new MyUpdatesHandler());
+$Bot = new TelegramBot('bot_token');
 ```
+More documentation [here](https://muaath5.github.io/SimpleBotAPI/CreatingBot)
 
 ### Using method
 It should be in this format:
@@ -78,7 +78,7 @@ You can contribute by:
 - Completing the TODO List.
 - Adding more examples to `examples/`.
 - Documenting undocumented things in `docs/`.
-- Updating the library to the next version of Bot API.
+- Updating the library to the next version of Bot API (if needed).
 - Adding more tests in `test/` folder.
 
 ## Contact me
@@ -90,14 +90,17 @@ Currently, There're three examples in `examples/` folder:
 - Echo Bot, Which sends same as you sent
 - Weclome Bot, Which sends Welcome & ID of user who joins the group
 - Contact Me Bot, Which is a Bot be same as you, You'll receive messages & Reply
-- FAQ Bot, Which has one message & buttons to swap between questions, And you can see answers. Also you can search any question in Inline mode.
+- FAQ Bot, Which has one message & buttons to swap between questions, And you can see answers.
+
+You can see a full example [here](https://muaath5.github.io/SimpleBotAPI/FullExample)
 
 **All of these examples doesn't need any databases or files to storage, Only Settings file.**
 
 ## TODO List
 - [x] API via HTTP response in webhooks method
-- [x] Using namespace for exceptions.
-- [ ] Documenting sending message with reply markup.
+- [x] Using namespace for exceptions
+- [ ] Documenting sending message with reply markup
+- [ ] Add webhook authorization
 - [ ] Auto handle for `callback_query` & `inline_query`
 - [ ] Add JSON Storage can be used by bot
 - [ ] Add DB Storage can be used by bot
