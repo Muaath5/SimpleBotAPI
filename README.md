@@ -25,8 +25,9 @@ This Library should support all Bot API versions in methods.
 ## Installation
 
 ### Prerequists
-- PHP 7.0 Or Higher
 - cURL PHP extension enabled
+#### Suggestions
+- PHP 7.4 as minimum
 
 ### Installing
 Install it via composer:
