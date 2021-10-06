@@ -1,8 +1,6 @@
 <?php
 namespace SimpleBotAPI;
 
-use CurlHandle;
-use InvalidArgumentException;
 use SimpleBotAPI\BotSettings;
 use SimpleBotAPI\UpdatesHandler;
 
@@ -26,7 +24,7 @@ class TelegramBot
     public BotSettings $Settings;
     
     private ?UpdatesHandler $UpdatesHandler = null;
-    private CurlHandle $curl;
+    private \CurlHandle $curl;
 
     public function __construct(string $token, UpdatesHandler $updatesHandler = null, BotSettings $settings = null)
     {
@@ -175,7 +173,7 @@ class TelegramBot
             'timeout' => $this->Settings->UpdatesTimeout,
             'allowed_updates' => json_encode($this->Settings->AllowedUpdates)
         ]);
-        
+
         foreach ($updates as $update)
         {
             if ($update->update_id > $this->Settings->LastUpdateID)
@@ -280,6 +278,10 @@ class TelegramBot
                         throw new TelegramChatMigratedException($object);
                     }
                 }
+            }
+            else if ($object->error_code == 401)
+            {
+                throw new TelegramUnauthorizedException($object->description);
             }
             else
             {
