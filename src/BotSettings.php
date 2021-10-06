@@ -13,8 +13,7 @@ class BotSettings
     public int $LastUpdateID = 0;
     public int $LastUpdateDate = 0;
 
-    // TODO: Add in the next update..
-    public bool $UpdateAuthorization = false;
+    public bool $CheckUpdates = false;
 
     public bool $AutoHandleSettings = false;
     public bool $AutoHandleDuplicateUpdates = true;
