@@ -20,13 +20,13 @@ if (!$success) {
 **Note:** If you don't want fake updates, You can use `$Bot->CheckAuthorization()`, Only on PHP web apps
 
 
-## Long-polling (`getUpdates` method)
+### Deleting
 You **can't** use both Long-polling & Webhook, So if you want to move from webhook to long-polling use this:
 ```php
 $Bot->DeleteWebhook();
 ```
 
-
+## Long-polling (`getUpdates` method)
 If you want Long-polling that stops after sometime:
 ```php
 $stop_time = strtotime('+10 minutes');
