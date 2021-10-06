@@ -10,7 +10,7 @@ use SimpleBotAPI\TelegramBot;
 use SimpleBotAPI\BotSettings;
 use SimpleBotAPI\UpdatesHandler;
 
-# You can copy any of Update handlers in bot exanokes directory
+# You can copy any of Update handlers in bot examples directory
 class MyBot extends UpdatesHandler
 {
     
@@ -18,8 +18,7 @@ class MyBot extends UpdatesHandler
 
 if (!file_exists(SETTINGS_FILE_PATH))
 {
-    $Settings = new BotSettings(SETTINGS_FILE_PATH);
-    $Settings->AutoHandleSettings = true;
+    $Settings = new BotSettings(true, SETTINGS_FILE_PATH);
     $Settings->AutoHandleDuplicateUpdates = true;
 }
 else
@@ -27,6 +26,6 @@ else
     $Settings = BotSettings::Import(SETTINGS_FILE_PATH);
 }
 
-$Bot = new TelegramBot(getenv('TELEGRAM_BOT_TOKEN'), new MyBot(), BotSettings::Import(''));
+$Bot = new TelegramBot(getenv('TELEGRAM_BOT_TOKEN'), new MyBot(), $Settings);
 $Bot->OnWebhookUpdate();
 ```

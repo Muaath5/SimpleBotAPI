@@ -1,6 +1,12 @@
 # Updates
 ## Webhook
 ### Registering webhook
+There's two ways
+#### 1. Use `$Bot->SetBotWebhook()` method [Suggested]
+If you used this way, The updates will be checked if it was from Telegram, By checking `$_GET['token_hash']` if it equals to `hash(HashingMethod, Token)`
+
+#### 2. Native `setWebhook` method
+If you wanted this, You can run it in Postman Or browser.
 
 ### Receiving
 ```php
@@ -15,7 +21,7 @@ if (!$success) {
 
 
 ## Long-polling (`getUpdates` method)
-You can't use both Long-polling & Webhook, So if you want to move from webhook to long-polling use this:
+You **can't** use both Long-polling & Webhook, So if you want to move from webhook to long-polling use this:
 ```php
 $Bot->DeleteWebhook();
 ```
@@ -38,5 +44,4 @@ while (true)
 }
 ```
 
-===
-Any suggestions? Talk to [@Muaath_5](https://t.me/Muaath_5)
+[Go to next docuemnt?](https://muaath5.github.io/SimpleBotAPI/BotSettings)
