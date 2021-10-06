@@ -153,6 +153,17 @@ class TelegramBot
             $this->Settings->LastUpdateID = $Update->update_id;
         }
 
+        # Check `token_hash`
+
+        if ($this->Settings->CheckUpdates)
+        {
+            if ($_GET['token_hash'] != hash($this->HashingMethod, $this->Token))
+            {
+                # Fake update
+                return false;
+            }
+        }
+
         return $this->OnUpdate($Update);
     }
 
@@ -212,19 +223,11 @@ class TelegramBot
 
     public function SetBotWebhook(string $host, int $max_connections = 40, bool $auth = true)
     {
+        $this->Settings->CheckUpdates = $auth;
         return $this->SetWebhook([
             'url' => $host . ($auth ? '?token_hash=' . hash($this->HashingMethod, $this->Token) : ''),
             'max_connections' => $max_connections
         ]);
-    }
-
-    public function CheckAuthorization() : bool
-    {
-        if ($_GET['token_hash'] == hash('sha512', $this->Token))
-        {
-            return true;
-        }
-        return false;
     }
 
     /**
