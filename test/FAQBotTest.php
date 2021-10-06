@@ -22,7 +22,7 @@ final class FAQBotTest extends TestCase
             'text' => 'FAQBotTest.php started!'
         ]);
 
-        $stop_time = strtotime('+5 minutes');
+        $stop_time = strtotime('+3 minutes');
         while (time() < $stop_time)
         {
             $Bot->ReceiveUpdates();

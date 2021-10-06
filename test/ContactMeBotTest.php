@@ -18,7 +18,7 @@ final class ContactMeBotTest extends TestCase
             'chat_id' => 1265170068,
             'text' => 'ContactMeBotTest.php started!'
         ]);
-        $stop_time = strtotime('+5 minutes');
+        $stop_time = strtotime('+3 minutes');
         while (time() < $stop_time)
         {
             $Bot->ReceiveUpdates();
