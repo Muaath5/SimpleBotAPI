@@ -137,7 +137,11 @@ class TelegramBot
     public function OnWebhookUpdate() : bool
     {
         $Update = json_decode(file_get_contents('php://input'));
-        if (empty($Update)) return false;
+        if (empty($Update))
+        {
+            http_response_code(400);
+            return false;
+        }
 
         if ($this->Settings->AutoHandleDuplicateUpdates)
         {
@@ -147,6 +151,7 @@ class TelegramBot
                 if ($this->Settings->LastUpdateID >= $Update->update_id)
                 {
                     // This update is fake or duplicate by ID
+                    http_response_code(400);
                     return false;
                 }
             }
@@ -160,6 +165,7 @@ class TelegramBot
             if ($_GET['token_hash'] != hash($this->HashingMethod, $this->Token))
             {
                 # Fake update
+                http_response_code(401);
                 return false;
             }
         }
@@ -218,6 +224,9 @@ class TelegramBot
         $payload = json_encode($params);
         header('Content-Type: application/json');
         header('Content-Length: ' . strlen($payload));
+
+        http_response_code(200);
+
         echo $payload;
     }
 
@@ -226,7 +235,8 @@ class TelegramBot
         $this->Settings->CheckUpdates = $auth;
         return $this->SetWebhook([
             'url' => $host . ($auth ? '?token_hash=' . hash($this->HashingMethod, $this->Token) : ''),
-            'max_connections' => $max_connections
+            'max_connections' => $max_connections,
+            'allowed_updates' => json_encode($this->Settings->AllowedUpdates)
         ]);
     }
 

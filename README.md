@@ -103,9 +103,9 @@ You can see a full example [here](https://muaath5.github.io/SimpleBotAPI/FullExa
 - [x] Add webhook authorization
 - [ ] Auto handle for `callback_query` & `inline_query`
 - [ ] Add JSON Storage can be used by bot
-- [ ] Add DB Storage can be used by bot
 - [ ] Auto-store for bot users
 - [ ] Method that posts to all bot users
+- [ ] Add DB Storage can be used by bot
 
 ## License
 GPL-3.0, In LICENCE file.
