@@ -144,9 +144,9 @@ class TelegramBot
             # If sooner than 2 weeks
             if ($this->Settings->LastUpdateDate < strtotime('-2 week'))
             {
-                if ($this->Settings->LastUpdateID != $Update->update_id)
+                if ($this->Settings->LastUpdateID >= $Update->update_id)
                 {
-                    // This update is fake by ID
+                    // This update is fake or duplicate by ID
                     return false;
                 }
             }
