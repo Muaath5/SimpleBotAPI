@@ -92,8 +92,9 @@ class TelegramBot
         if ($this->Settings->AutoHandleDuplicateUpdates)
         {
             # Sooner than two weeks, Check the ID
-            if ($this->Settings->LastUpdateDate >= strtotime('-2 weeks'))
+            if ($this->Settings->LastUpdateDate > strtotime('-2 weeks'))
             {
+                # Check if update is in the write order
                 if ($this->Settings->LastUpdateID == $update->update_id - 1)
                 {
                     $this->Settings->LastUpdateID = $update->update_id;
@@ -102,7 +103,7 @@ class TelegramBot
                 else
                 {
                     # Error, Update ID wrong
-                    error_log("Last Update ID ({$this->Settings->LastUpdateID}) != Update ID ({$update->update_id}) + 1");
+                    error_log("Last Update ID ({$this->Settings->LastUpdateID}) != Update ID ({$update->update_id}) - 1");
                     http_response_code(400);
                     return false;
                 }
