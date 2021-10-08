@@ -26,7 +26,7 @@ class TelegramBot
     private ?UpdatesHandler $UpdatesHandler = null;
     private \CurlHandle $curl;
 
-    public function __construct(string $token, UpdatesHandler $updatesHandler = null, BotSettings $settings = null)
+    public function __construct(string $token, UpdatesHandler $updatesHandler = null, BotSettings $settings = null, bool $logErrors = true)
     {
         # Check if token is match Regex format
         if (preg_match('/^(\d+):[\w-]{30,}$/', $token, $matches) === 0)
@@ -80,51 +80,85 @@ class TelegramBot
             throw new \InvalidArgumentException("This bot doesn't has updates handler");
         }
         
-        $this->Settings->LastUpdateID = $update->update_id;
-        $this->Settings->LastUpdateDate = time();
+        if (empty($update))
+        {
+            error_log("Update is empty");
+            http_response_code(400);
+            return false;
+        }
+
+
+        # Checking the update
+        if ($this->Settings->AutoHandleDuplicateUpdates)
+        {
+            # Sooner than two weeks, Check the ID
+            if ($this->Settings->LastUpdateDate >= strtotime('-2 weeks'))
+            {
+                if ($this->Settings->LastUpdateID == $update->update_id - 1)
+                {
+                    $this->Settings->LastUpdateID = $update->update_id;
+                    $this->Settings->LastUpdateDate = time();
+                }
+                else
+                {
+                    # Error, Update ID wrong
+                    error_log("Last Update ID ({$this->Settings->LastUpdateID}) != Update ID ({$update->update_id}) + 1");
+                    http_response_code(400);
+                    return false;
+                }
+            }
+            # Otherwise, Don't check the ID, Take it as it is
+            else 
+            {
+                $this->Settings->LastUpdateID = $update->update_id;
+                $this->Settings->LastUpdateDate = time();
+            }
+        }
 
         switch ($update)
         {
-            case property_exists($update, 'message'):
+            case property_exists($update, 'message') && !array_search('message', $this->Settings->AllowedUpdates):
                 return $this->UpdatesHandler->MessageHandler($update->message);
             
-            case property_exists($update, 'edited_message'):
+            case property_exists($update, 'edited_message') && !array_search('edited_message', $this->Settings->AllowedUpdates):
                 return $this->UpdatesHandler->EditedMessageHandler($update->edited_message);
 
 
-            case property_exists($update, 'channel_post'):
+            case property_exists($update, 'channel_post') && !array_search('channel_post', $this->Settings->AllowedUpdates):
                 return $this->UpdatesHandler->ChannelPostHandler($update->channel_post);
 
-            case property_exists($update, 'edited_channel_post'):
+            case property_exists($update, 'edited_channel_post') && !array_search('edited_channel_post', $this->Settings->AllowedUpdates):
                 return $this->UpdatesHandler->EditedChannelPostHandler($update->edited_channel_post);
 
 
-            case property_exists($update, 'inline_query'):
+            case property_exists($update, 'inline_query') && !array_search('inline_query', $this->Settings->AllowedUpdates):
                 return $this->UpdatesHandler->InlineQueryHandler($update->inline_query);
 
-            case property_exists($update, 'chosen_inline_query'):
+            case property_exists($update, 'chosen_inline_query') && !array_search('chosen_inline_query', $this->Settings->AllowedUpdates):
                 return $this->UpdatesHandler->ChosenInlineQueryHandler($update->chosen_inline_query);
 
 
-            case property_exists($update, 'callback_query'):
+            case property_exists($update, 'callback_query') && !array_search('callback_query', $this->Settings->AllowedUpdates):
                 return $this->UpdatesHandler->CallbackQueryHandler($update->callback_query);
 
 
-            case property_exists($update, 'my_chat_member'):
+            case property_exists($update, 'my_chat_member') && !array_search('my_chat_member', $this->Settings->AllowedUpdates):
                 return $this->UpdatesHandler->MyChatMemberHandler($update->my_chat_member);
 
-            case property_exists($update, 'chat_member'):
+            case property_exists($update, 'chat_member') && !array_search('v', $this->Settings->AllowedUpdates):
                 return $this->UpdatesHandler->ChatMemberHandler($update->chat_member);
 
 
-            case property_exists($update, 'shipping_query'):
+            case property_exists($update, 'shipping_query') && !array_search('shipping_query', $this->Settings->AllowedUpdates):
                 return $this->UpdatesHandler->ShippingQueryHandler($update->shipping_query);
 
-            case property_exists($update, 'pre_checkout_query'):
+            case property_exists($update, 'pre_checkout_query') && !array_search('pre_checkout_query', $this->Settings->AllowedUpdates):
                 return $this->UpdatesHandler->PreCheckoutQueryHandler($update->pre_checkout_query);
 
             default:
                 # This means Library version is out-dated, Or it's a faked update
+                error_log('Update type not allowed!');
+                http_response_code(400);
                 return false;
         }
     }
@@ -137,31 +171,8 @@ class TelegramBot
     public function OnWebhookUpdate() : bool
     {
         $Update = json_decode(file_get_contents('php://input'));
-        if (empty($Update))
-        {
-            error_log("Empty update");
-            http_response_code(400);
-            return false;
-        }
-
-        if ($this->Settings->AutoHandleDuplicateUpdates)
-        {
-            # If sooner than 2 weeks
-            if ($this->Settings->LastUpdateDate > strtotime('-2 week'))
-            {
-                if ($this->Settings->LastUpdateID >= $Update->update_id)
-                {
-                    // This update is fake or duplicate by ID
-                    error_log("Last update ID ({$this->Settings->LastUpdateID}) >= Receieved update ID ({$Update->update_id})");
-                    http_response_code(400);
-                    return false;
-                }
-            }
-            $this->Settings->LastUpdateID = $Update->update_id;
-        }
 
         # Check `token_hash`
-
         if ($this->Settings->CheckUpdates)
         {
             if ($_GET['token_hash'] != hash($this->HashingMethod, $this->Token))
@@ -181,7 +192,7 @@ class TelegramBot
         if ($this->Settings->AutoHandleDuplicateUpdates)
         {
             # If sooner than 2 weeks
-            if ($this->Settings->LastUpdateDate < strtotime('-2 week'))
+            if ($this->Settings->LastUpdateDate >= strtotime('-2 week'))
             {
                 $offset = $this->Settings->LastUpdateID + 1;
             }
@@ -196,10 +207,7 @@ class TelegramBot
 
         foreach ($updates as $update)
         {
-            if ($update->update_id > $this->Settings->LastUpdateID)
-            {
-                $this->OnUpdate($update);
-            }
+            $this->OnUpdate($update);
             $this->Settings->LastUpdateID = max($this->Settings->LastUpdateID, $update->update_id);
         }
         return true;
@@ -248,7 +256,7 @@ class TelegramBot
      *
      * @param string $method The method name from https://core.telegram.org/bots/api
      * @param array $params The arguments of the method, as an array
-     * @return stdClass|bool|string|int|float
+     * @return stdClass|bool|string|int|float The return from the method after json_decode
      * @throws TelegramException,\RuntimeException
      */
     public function __call(string $method, array $params) : mixed
