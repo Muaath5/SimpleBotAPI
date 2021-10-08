@@ -95,7 +95,7 @@ class TelegramBot
             if ($this->Settings->LastUpdateDate > strtotime('-2 weeks'))
             {
                 # Check if update is in the write order
-                if ($this->Settings->LastUpdateID == $update->update_id - 1)
+                if ($this->Settings->LastUpdateID == $update->update_id - 1 || $this->Settings->LastUpdateID == -1)
                 {
                     $this->Settings->LastUpdateID = $update->update_id;
                     $this->Settings->LastUpdateDate = time();
