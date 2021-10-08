@@ -139,6 +139,7 @@ class TelegramBot
         $Update = json_decode(file_get_contents('php://input'));
         if (empty($Update))
         {
+            error_log("Empty update");
             http_response_code(400);
             return false;
         }
@@ -146,11 +147,12 @@ class TelegramBot
         if ($this->Settings->AutoHandleDuplicateUpdates)
         {
             # If sooner than 2 weeks
-            if ($this->Settings->LastUpdateDate < strtotime('-2 week'))
+            if ($this->Settings->LastUpdateDate > strtotime('-2 week'))
             {
                 if ($this->Settings->LastUpdateID >= $Update->update_id)
                 {
                     // This update is fake or duplicate by ID
+                    error_log("Last update ID ({$this->Settings->LastUpdateID}) >= Receieved update ID ({$Update->update_id})");
                     http_response_code(400);
                     return false;
                 }
@@ -165,6 +167,7 @@ class TelegramBot
             if ($_GET['token_hash'] != hash($this->HashingMethod, $this->Token))
             {
                 # Fake update
+                error_log("Unauthorized, Received token_hash={$_GET['token_hash']}");
                 http_response_code(401);
                 return false;
             }
