@@ -10,7 +10,7 @@ class BotSettings
 
     public array $AllowedUpdates = ['message', 'edited_message', 'channel_post', 'edited_chanel_post', 'callback_query', 'inline_query', 'my_chat_member'];
     public int $UpdatesTimeout = 1;
-    public int $LastUpdateID = 0;
+    public int $LastUpdateID = -1;
     public int $LastUpdateDate = 0;
 
     public bool $CheckUpdates = false;
