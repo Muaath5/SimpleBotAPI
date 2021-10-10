@@ -101,7 +101,6 @@ You can see a full example [here](https://muaath5.github.io/SimpleBotAPI/FullExa
 - [x] Using namespace for exceptions
 - [x] Documenting sending message with reply markup
 - [x] Add webhook authorization
-- [ ] Auto handle for `callback_query` & `inline_query`
 - [ ] Add JSON Storage can be used by bot
 - [ ] Auto-store for bot users
 - [ ] Method that posts to all bot users
