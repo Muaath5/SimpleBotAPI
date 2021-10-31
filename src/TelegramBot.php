@@ -89,13 +89,20 @@ class TelegramBot
 
 
         # Checking the update
-        if ($this->Settings->AutoHandleDuplicateUpdates)
+        if ($this->Settings->HandleDuplicateUpdatesLevel)
         {
-            # Sooner than two weeks, Check the ID
+            # Sooner than one week, Check the ID
             if ($this->Settings->LastUpdateDate > strtotime('-1 week'))
             {
+                $isRealUpdate = false;
+
+                if ($this->Settings->HandleDuplicateUpdatesLevel == 1 && $this->Settings->LastUpdateID < $update->update_id)
+                    $isRealUpdate = true;
+                else if ($this->Settings->HandleDuplicateUpdatesLevel == 3 && $this->Settings->LastUpdateID === $update->update_id - 1)
+                    $isRealUpdate = true;
+
                 # Check if update is in the write order
-                if ($this->Settings->LastUpdateID < $update->update_id || $this->Settings->LastUpdateID == -1)
+                if ($isRealUpdate || $this->Settings->LastUpdateID == -1)
                 {
                     $this->Settings->LastUpdateID = $update->update_id;
                     $this->Settings->LastUpdateDate = time();
@@ -104,7 +111,8 @@ class TelegramBot
                 {
                     # Error, Update ID wrong
                     error_log("Last Update ID ({$this->Settings->LastUpdateID}) != Update ID ({$update->update_id}) - 1");
-                    http_response_code(400);
+                    if ($this->Settings->HandleDuplicateUpdatesLevel == 2 || $this->Settings->HandleDuplicateUpdatesLevel == 4)
+                        http_response_code(400);
                     return false;
                 }
             }
@@ -116,6 +124,7 @@ class TelegramBot
             }
         }
 
+        # Calling update handler
         switch ($update)
         {
             case property_exists($update, 'message') && !array_search('message', $this->Settings->AllowedUpdates):
@@ -159,7 +168,6 @@ class TelegramBot
             default:
                 # This means Library version is out-dated, Or it's a faked update
                 error_log('Update type not allowed!');
-                http_response_code(400);
                 return false;
         }
     }

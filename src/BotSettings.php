@@ -2,7 +2,7 @@
 
 namespace SimpleBotAPI;
 
-use Exception;
+use stdClass;
 
 class BotSettings
 {
@@ -15,13 +15,14 @@ class BotSettings
 
     public bool $CheckUpdates = false;
 
+    public array $BotUsers = [];
+    public bool $AutoSaveBotUsers = false;
+
+    public int $HandleDuplicateUpdatesLevel = 1;
+
     public bool $AutoHandleSettings = false;
-    public bool $AutoHandleDuplicateUpdates = true;
     public bool $AutoHandleFloodException = true;
     public bool $AutoHandleChatMigratedException = true;
-    # TODO: Auto handle
-    // public bool $AutoHandleInlineQueries = false;
-    // public bool $AutoHandleCallbackQueries = false;
     
     public string $APIHost = 'https://api.telegram.org';
 
@@ -33,7 +34,7 @@ class BotSettings
         int $updates_timeout = 1,
         array $allowed_updates = ['message', 'edited_message', 'channel_post', 'edited_channel_post', 'callback_query', 'inline_query', 'my_chat_member'],
 
-        bool $auto_handle_duplicate_updates = true,
+        int $handle_duplicate_updates_level = 1,
         bool $auto_handle_flood = true,
         bool $auto_handle_chat_migrated = true,
 
@@ -59,7 +60,7 @@ class BotSettings
         $this->UpdatesTimeout = $updates_timeout;
 
         # Auto handle for features
-        $this->AutoHandleDuplicateUpdates = $auto_handle_duplicate_updates;
+        $this->HandleDuplicateUpdatesLevel = $handle_duplicate_updates_level;
         $this->AutoHandleSettings = $auto_handle_settings;
         $this->AutoHandleFloodException = $auto_handle_flood;
         $this->AutoHandleChatMigratedException = $auto_handle_chat_migrated;
@@ -94,7 +95,13 @@ class BotSettings
 
         $data->SaveFilePath = $save_file_path;
         file_put_contents($save_file_path, json_encode($data, JSON_PRETTY_PRINT));
+
+        if ($data->AutoSaveBotUsers)
+        {
+            file_put_contents('users_db.json', json_encode($data->BotUsers, JSON_PRETTY_PRINT));
+        }
     }
+
 
     /**
      * recast stdClass object to an object with type
