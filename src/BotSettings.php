@@ -9,6 +9,10 @@ class BotSettings
     public string $ReceivingUpdatesType = 'webhook';
 
     public array $AllowedUpdates = ['message', 'edited_message', 'channel_post', 'edited_chanel_post', 'callback_query', 'inline_query', 'my_chat_member'];
+
+    # This should be set by the bot itself
+    public array $BotAdmins = [];
+
     public int $UpdatesTimeout = 1;
     public int $LastUpdateID = -1;
     public int $LastUpdateDate = 0;
