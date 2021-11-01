@@ -198,10 +198,10 @@ class TelegramBot
 
     public function ReceiveUpdates(int $limit = 100, int $offset = 0) : bool
     {
-        if ($this->Settings->AutoHandleDuplicateUpdates)
+        if ($this->Settings->HandleDuplicateUpdatesLevel)
         {
             # If sooner than 2 weeks
-            if ($this->Settings->LastUpdateDate >= strtotime('-2 week'))
+            if ($this->Settings->LastUpdateDate >= strtotime('-1 week'))
             {
                 $offset = $this->Settings->LastUpdateID + 1;
             }
