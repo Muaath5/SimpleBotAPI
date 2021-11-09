@@ -6,7 +6,14 @@ use stdClass;
 
 class BotSettings
 {
-    public array $AllowedUpdates = ['message', 'edited_message', 'channel_post', 'edited_chanel_post', 'callback_query', 'inline_query', 'my_chat_member'];
+    public array $AllowedUpdates = [
+        'message',
+        'channel_post',
+        'callback_query',
+        'inline_query',
+        'my_chat_member',
+        'chat_join_request'
+    ];
 
     # These should be set by library's user
     public array $BotAdmins = [];

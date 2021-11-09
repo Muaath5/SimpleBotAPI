@@ -89,4 +89,10 @@ class UpdatesHandler
     {
         return false;
     }
+
+
+    public function ChatJoinRequestHandler(object $chat_join_request) : bool
+    {
+        return false;
+    }
 }

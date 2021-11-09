@@ -1,29 +1,28 @@
 # Simple Bot API
 [![Licence: GPL v3.0](https://img.shields.io/badge/Licence-GPL%20v3.0-green)](LICENCE)
-[![Bot API Version: 5.3](https://img.shields.io/badge/Bot%20API%20Version-5.3-dodgerblue)](https://core.telegram.org/bots/api#april-26-2021)
+[![Bot API Version: 5.4](https://img.shields.io/badge/Bot%20API%20Version-5.3-dodgerblue)](https://core.telegram.org/bots/api#april-26-2021)
 [![PHP Unit Tests](https://github.com/Muaath5/SimpleBotAPI/actions/workflows/php.yml/badge.svg)](https://github.com/Muaath5/SimpleBotAPI/actions/workflows/php.yml)
 
 
-This is simple Telegram Bot API in PHP, Supports Bot API 5.3.
-
-This Library should support all Bot API versions in methods.
+This is simple Telegram Bot API in PHP, Supports Bot API 5.4
+This library should support all Bot API methods in any version update.
+The target of creating it is to make creating bots more simpliler, No need for a lot of Classes And libraries.
 
 ## Features
-- Supports all Bot API methods without needing to update.
-- Can Auto handle for flood errors
-- Uses stdClass for updates.
-- Using OOP.
-- Settings for each bot.
-- Based on cURL.
-- Downloadable via composer.
-- Tests in GitHub Actions.
-- Has examples of some made bots.
-- Full Documented.
-- Telegram Errors as PHP Exceptions.
-- Up to date.
+- Supports all Bot API methods without updating
+- Auto handling for flood & chat ID errors
+- Uses `stdClass` for updates
+- Uses OOP
+- Optional Settings for each bot can be saved in JSON
+- Based on cURL for speed
+- Downloadable via composer
+- Testing the library in GitHub Actions
+- Has examples of some made bots
+- Full Documented
+- Telegram Errors as PHP Exceptions
+- Up to date
 
 ## Installation
-
 More documentation is [here](https://muaath5.github.io/SimpleBotAPI/Installation)
 
 ### Prerequists
@@ -105,6 +104,7 @@ You can see a full example [here](https://muaath5.github.io/SimpleBotAPI/FullExa
 - [x] Add JSON Storage can be used by bot
 - [x] Method that posts to all bot users
 - [ ] Add DB Storage can be used by bot
+- [ ] Document missed things
 
 ## License
 GPL-3.0, In LICENCE file.

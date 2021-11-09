@@ -159,8 +159,11 @@ class TelegramBot
             case property_exists($update, 'my_chat_member') && !array_search('my_chat_member', $this->Settings->AllowedUpdates):
                 return $this->UpdatesHandler->MyChatMemberHandler($update->my_chat_member);
 
-            case property_exists($update, 'chat_member') && !array_search('v', $this->Settings->AllowedUpdates):
+            case property_exists($update, 'chat_member') && !array_search('chat_member', $this->Settings->AllowedUpdates):
                 return $this->UpdatesHandler->ChatMemberHandler($update->chat_member);
+                
+            case property_exists($update, 'chat_join_request') && !array_search('chat_join_request', $this->Settings->AllowedUpdates):
+                return $this->UpdatesHandler->ChatJoinRequestHandler($update->chat_join_request);
 
 
             case property_exists($update, 'shipping_query') && !array_search('shipping_query', $this->Settings->AllowedUpdates):
