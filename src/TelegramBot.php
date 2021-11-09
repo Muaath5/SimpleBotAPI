@@ -128,6 +128,10 @@ class TelegramBot
         switch ($update)
         {
             case property_exists($update, 'message') && !array_search('message', $this->Settings->AllowedUpdates):
+                if ($this->Settings->AutoSaveBotUsers && !array_search($update->message->from->id, $this->Settings->BotUsers))
+                {
+                    array_push($this->Settings->BotUsers, $update->message->from->id);
+                }
                 return $this->UpdatesHandler->MessageHandler($update->message);
             
             case property_exists($update, 'edited_message') && !array_search('edited_message', $this->Settings->AllowedUpdates):
@@ -220,6 +224,21 @@ class TelegramBot
             $this->Settings->LastUpdateID = max($this->Settings->LastUpdateID, $update->update_id);
         }
         return true;
+    }
+
+    # A function to send messages to all bot users
+    public function BroudcastMessage(string $text, array $reply_markup = [], string $parse_mode = 'HTML', bool $disable_notification = false)
+    {
+        foreach ($this->Settings->BotUsers as $userId)
+        {
+            $this->SendMessage([
+                'chat_id' => $userId,
+                'text' => $text,
+                'parse_mode' => $parse_mode,
+                'reply_markup' => json_encode($reply_markup),
+                'disable_notification' => $disable_notification
+            ]);
+        }
     }
 
     /**

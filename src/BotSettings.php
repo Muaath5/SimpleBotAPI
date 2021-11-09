@@ -6,12 +6,11 @@ use stdClass;
 
 class BotSettings
 {
-    public string $ReceivingUpdatesType = 'webhook';
-
     public array $AllowedUpdates = ['message', 'edited_message', 'channel_post', 'edited_chanel_post', 'callback_query', 'inline_query', 'my_chat_member'];
 
-    # This should be set by the bot itself
+    # These should be set by library's user
     public array $BotAdmins = [];
+    public ?stdClass $AdditionalData = null;
 
     public int $UpdatesTimeout = 1;
     public int $LastUpdateID = -1;
