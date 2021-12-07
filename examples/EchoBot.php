@@ -19,10 +19,10 @@ use SimpleBotAPI\UpdatesHandler;
 # Check authentication
 if ($_REQUEST['token'] == getenv('BOT_TOKEN'))
 {
-    $Bot = new TelegramBot(getenv('BOT_TOKEN'), new BotSettings(new EchoBot()));
+    $Bot = new TelegramBot(getenv('BOT_TOKEN'), new EchoBot(), new BotSettings());
 
     # Process Webhook Update
-    $Bot->OnWebhookUpdate(file_get_contents('php://input'));
+    $Bot->OnWebhookUpdate();
 }
 
 class EchoBot extends UpdatesHandler

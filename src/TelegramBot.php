@@ -127,54 +127,54 @@ class TelegramBot
         # Calling update handler
         switch ($update)
         {
-            case property_exists($update, 'message') && !array_search('message', $this->Settings->AllowedUpdates):
+            case property_exists($update, 'message') && array_search('message', $this->Settings->AllowedUpdates) !== false:
                 if ($this->Settings->AutoSaveBotUsers && !array_search($update->message->from->id, $this->Settings->BotUsers))
                 {
                     array_push($this->Settings->BotUsers, $update->message->from->id);
                 }
                 return $this->UpdatesHandler->MessageHandler($update->message);
             
-            case property_exists($update, 'edited_message') && !array_search('edited_message', $this->Settings->AllowedUpdates):
+            case property_exists($update, 'edited_message') && (array_search('edited_message', $this->Settings->AllowedUpdates) !== false):
                 return $this->UpdatesHandler->EditedMessageHandler($update->edited_message);
 
 
-            case property_exists($update, 'channel_post') && !array_search('channel_post', $this->Settings->AllowedUpdates):
+            case property_exists($update, 'channel_post') && (array_search('channel_post', $this->Settings->AllowedUpdates) !== false):
                 return $this->UpdatesHandler->ChannelPostHandler($update->channel_post);
 
-            case property_exists($update, 'edited_channel_post') && !array_search('edited_channel_post', $this->Settings->AllowedUpdates):
+            case property_exists($update, 'edited_channel_post') && (array_search('edited_channel_post', $this->Settings->AllowedUpdates) !== false):
                 return $this->UpdatesHandler->EditedChannelPostHandler($update->edited_channel_post);
 
 
-            case property_exists($update, 'inline_query') && !array_search('inline_query', $this->Settings->AllowedUpdates):
+            case property_exists($update, 'inline_query') && (array_search('inline_query', $this->Settings->AllowedUpdates) !== false):
                 return $this->UpdatesHandler->InlineQueryHandler($update->inline_query);
 
-            case property_exists($update, 'chosen_inline_query') && !array_search('chosen_inline_query', $this->Settings->AllowedUpdates):
+            case property_exists($update, 'chosen_inline_query') && (array_search('chosen_inline_query', $this->Settings->AllowedUpdates) !== false):
                 return $this->UpdatesHandler->ChosenInlineQueryHandler($update->chosen_inline_query);
 
 
-            case property_exists($update, 'callback_query') && !array_search('callback_query', $this->Settings->AllowedUpdates):
+            case property_exists($update, 'callback_query') && (array_search('callback_query', $this->Settings->AllowedUpdates) !== false):
                 return $this->UpdatesHandler->CallbackQueryHandler($update->callback_query);
 
 
-            case property_exists($update, 'my_chat_member') && !array_search('my_chat_member', $this->Settings->AllowedUpdates):
+            case property_exists($update, 'my_chat_member') && (array_search('my_chat_member', $this->Settings->AllowedUpdates) !== false):
                 return $this->UpdatesHandler->MyChatMemberHandler($update->my_chat_member);
 
-            case property_exists($update, 'chat_member') && !array_search('chat_member', $this->Settings->AllowedUpdates):
+            case property_exists($update, 'chat_member') && (array_search('chat_member', $this->Settings->AllowedUpdates) !== false):
                 return $this->UpdatesHandler->ChatMemberHandler($update->chat_member);
                 
-            case property_exists($update, 'chat_join_request') && !array_search('chat_join_request', $this->Settings->AllowedUpdates):
+            case property_exists($update, 'chat_join_request') && (array_search('chat_join_request', $this->Settings->AllowedUpdates) !== false):
                 return $this->UpdatesHandler->ChatJoinRequestHandler($update->chat_join_request);
 
 
-            case property_exists($update, 'shipping_query') && !array_search('shipping_query', $this->Settings->AllowedUpdates):
+            case property_exists($update, 'shipping_query') && (array_search('shipping_query', $this->Settings->AllowedUpdates) !== false):
                 return $this->UpdatesHandler->ShippingQueryHandler($update->shipping_query);
 
-            case property_exists($update, 'pre_checkout_query') && !array_search('pre_checkout_query', $this->Settings->AllowedUpdates):
+            case property_exists($update, 'pre_checkout_query') && (array_search('pre_checkout_query', $this->Settings->AllowedUpdates) !== false):
                 return $this->UpdatesHandler->PreCheckoutQueryHandler($update->pre_checkout_query);
 
             default:
                 # This means Library version is out-dated, Or it's a faked update
-                error_log('Update type not allowed!');
+                error_log("ERROR: Update type is not allowed or unknown!");
                 return false;
         }
     }
@@ -194,7 +194,7 @@ class TelegramBot
             if ($_GET['token_hash'] != hash($this->HashingMethod, $this->Token))
             {
                 # Fake update
-                error_log("Unauthorized, Received token_hash={$_GET['token_hash']}");
+                error_log("ERROR[401]: Received invalid token_hash={$_GET['token_hash']}");
                 http_response_code(401);
                 return false;
             }
@@ -232,6 +232,8 @@ class TelegramBot
     # A function to send messages to all bot users
     public function BroudcastMessage(string $text, array $reply_markup = [], string $parse_mode = 'HTML', bool $disable_notification = false)
     {
+        $usersCnt = count($this->Settings->BotUsers);
+        error_log("INFO: Broadcasting to {$usersCnt} users");
         foreach ($this->Settings->BotUsers as $userId)
         {
             $this->SendMessage([
@@ -267,6 +269,7 @@ class TelegramBot
         header('Content-Type: application/json');
         header('Content-Length: ' . strlen($payload));
 
+        error_log("INFO: Webhook responsed method {$method}");
         http_response_code(200);
 
         echo $payload;
@@ -274,9 +277,11 @@ class TelegramBot
 
     public function SetBotWebhook(string $host, int $max_connections = 40, bool $auth = true)
     {
+        $newWebhookUrl = $host . ($auth ? '?token_hash=' . hash($this->HashingMethod, $this->Token) : '');
+        error_log("INFO: Webhook was set to {$newWebhookUrl}");
         $this->Settings->CheckUpdates = $auth;
         return $this->SetWebhook([
-            'url' => $host . ($auth ? '?token_hash=' . hash($this->HashingMethod, $this->Token) : ''),
+            'url' => $newWebhookUrl,
             'max_connections' => $max_connections,
             'allowed_updates' => json_encode($this->Settings->AllowedUpdates)
         ]);
@@ -308,9 +313,11 @@ class TelegramBot
                 # Flood error
                 if (property_exists($object->parameters, 'retry_after'))
                 {
+                    $secondsToWait = $object->parameters->retry_after * 1000000;
+                    error_log("WARNING: Flood error, Retry after {$secondsToWait}");
                     if ($this->Settings->AutoHandleFloodException)
                     {
-                        usleep($object->parameters->retry_after * 1000000 + 1000000);
+                        usleep($secondsToWait + 1000000);
                         # Recall same method
                         $this->$method($params[0] ?? []);
                     }

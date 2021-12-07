@@ -93,5 +93,4 @@ $Bot->SendMessage([
 
 [Go to next document?](https://muaath5.github.io/SimpleBotAPI/CallbackQueries)
 ===
-**This was all of out documentation :)**
 Anything missed, unclear, Or not working? Contact @Muaath_5!

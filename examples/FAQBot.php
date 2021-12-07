@@ -10,8 +10,6 @@ use SimpleBotAPI\BotSettings;
 use SimpleBotAPI\TelegramBot;
 use SimpleBotAPI\UpdatesHandler;
 
-use function PHPSTORM_META\type;
-
 # The webhook url should be:
 # https://mywebsite.com/echo-bot.php?token={bot_token}
 #

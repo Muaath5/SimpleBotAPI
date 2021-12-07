@@ -20,10 +20,10 @@ use SimpleBotAPI\BotSettings;
 # Check authentication
 if ($_REQUEST['token'] == getenv('BOT_TOKEN'))
 {
-    $Bot = new TelegramBot(getenv('BOT_TOKEN'), new BotSettings(new WelcomeBot(getenv('LOGS_CHAT_ID'))));
+    $Bot = new TelegramBot(getenv('BOT_TOKEN'), new WelcomeBot(getenv('LOGS_CHAT_ID'), new BotSettings()));
 
     # Process Webhook Update
-    $Bot->OnWebhookUpdate(file_get_contents('php://input'));
+    $Bot->OnWebhookUpdate();
 }
 
 # Note: When you send setWebhook method, Take care that chat_member updates should be allowed

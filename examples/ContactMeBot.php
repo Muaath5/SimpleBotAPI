@@ -21,10 +21,10 @@ if (isset($_REQUEST['token']))
 {
     if ($_REQUEST['token'] == getenv('BOT_TOKEN'))
     {
-        $Bot = new TelegramBot(getenv('BOT_TOKEN'), new BotSettings(new ContactMeBot(getenv('MESSAGES_CHAT_ID'), [126008640])));
+        $Bot = new TelegramBot(getenv('BOT_TOKEN'), new ContactMeBot(getenv('MESSAGES_CHAT_ID'), [126008640]), new BotSettings());
         
         # Process Webhook Update
-        $Bot->OnWebhookUpdate(file_get_contents('php://input'));
+        $Bot->OnWebhookUpdate();
     }
 }
 

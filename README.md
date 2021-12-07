@@ -103,6 +103,7 @@ You can see a full example [here](https://muaath5.github.io/SimpleBotAPI/FullExa
 - [x] Auto-store for bot users
 - [x] Add JSON Storage can be used by bot
 - [x] Method that posts to all bot users
+- [ ] Add logging (Done partially)
 - [ ] Add DB Storage can be used by bot
 - [ ] Document missed things
 
