@@ -1,39 +1,29 @@
 # Simple Bot API
 [![Licence: GPL v3.0](https://img.shields.io/badge/Licence-GPL%20v3.0-green)](LICENCE)
-[![Bot API Version: 5.4](https://img.shields.io/badge/Bot%20API%20Version-5.3-dodgerblue)](https://core.telegram.org/bots/api#april-26-2021)
+[![Bot API Version: 5.5.1](https://img.shields.io/badge/Bot%20API%20Version-5.5.1-dodgerblue)](https://core.telegram.org/bots/api#april-26-2021)
 [![PHP Unit Tests](https://github.com/Muaath5/SimpleBotAPI/actions/workflows/php.yml/badge.svg)](https://github.com/Muaath5/SimpleBotAPI/actions/workflows/php.yml)
 
 
-This is simple Telegram Bot API in PHP, Supports Bot API 5.4
+This is a simple Telegram Bot API library in PHP.
 This library should support all Bot API methods in any version update.
-The target of creating it is to make creating bots more simpliler, No need for a lot of Classes And libraries.
+I created this library to make creating bots more simpliler, No need to bunch of classes And objects after today!
 
 ## Features
-- Supports all Bot API methods without updating
-- Auto handling for flood & chat ID errors
+- Always supports all Bot API methods
+- Auto handling for flood & chat ID migrating errors
 - Uses `stdClass` for updates
 - Uses OOP
 - Optional Settings for each bot can be saved in JSON
 - Based on cURL for speed
 - Downloadable via composer
-- Testing the library in GitHub Actions
-- Has examples of some made bots
-- Full Documented
+- Tested via GitHub Actions
+- Has examples of working bots
 - Telegram Errors as PHP Exceptions
 - Up to date
+- Documented
 
 ## Installation
-More documentation is [here](https://muaath5.github.io/SimpleBotAPI/Installation)
-
-### Prerequists
-- cURL PHP extension enabled
-
-### Installing
-Install it via composer:
-```sh
-composer require muaath5/simple-bot-api
-```
-Or Download `src/` folder and require it in `composer.json`
+[Installation Guide](https://muaath5.github.io/SimpleBotAPI/Installation)
 
 ## Simple Usage
 ### Creating bot
@@ -64,7 +54,7 @@ $Bot->SendMessage([
 $my_channel_info = $Bot->getChat([
     'chat_id' => '@MuaathBots',
 ]);
-echo "Your channel (@$my_channel_info->username) ID: {$my_channel_info->id}";
+echo "Your channel (@{$my_channel_info->username}) ID: {$my_channel_info->id}";
 ```
 
 **Note:** There's NO PROBLEM if `methodName` was in upper or lower case.
@@ -73,16 +63,16 @@ echo "Your channel (@$my_channel_info->username) ID: {$my_channel_info->id}";
 You can contribute by:
 - Reporting a bug.
 - Suggesting a feature.
-- Improving code.
+- Improving code style.
 - Completing the TODO List.
 - Adding more examples to `examples/`.
-- Documenting undocumented things in `docs/`.
+- Documenting undocumented topics in `docs/`.
 - Updating the library to the next version of Bot API (if needed).
 - Adding more tests in `test/` folder.
 
 ## Contact me
-- Telegram: [@Muaath_5](https://t.me/Muaath_5) [Suggested]
-- Email: muaath1428@hotmail.com
+[![@Muaath_5 on Telegram](https://img.shields.io/badge/Telegram-@Muaath_5-blue)](https://t.me/Muaath_5)
+[![muaath1428@hotmail.com](https://img.shields.io/badge/Email-muaath1428@hotmail.com-orange)](mailto:muaath1428@hotmail.com)
 
 ## Examples
 Currently, There're three examples in `examples/` folder:
@@ -108,4 +98,5 @@ You can see a full example [here](https://muaath5.github.io/SimpleBotAPI/FullExa
 - [ ] Document missed things
 
 ## License
+[![Licence: GPL v3.0](https://img.shields.io/badge/Licence-GPL%20v3.0-green)](LICENCE)
 GPL-3.0, In LICENCE file.
