@@ -25,7 +25,7 @@ final class ContactMeBotTest extends TestCase
         }
         $Bot->SendMessage([
             'chat_id' => 1265170068,
-            'text' => 'ContactMeBotTest.php was stopped..'
+            'text' => 'ContactMeBotTest.php stopped.'
         ]);
 
         $this->assertEquals(true, true);

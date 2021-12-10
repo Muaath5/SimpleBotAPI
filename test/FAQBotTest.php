@@ -30,7 +30,7 @@ final class FAQBotTest extends TestCase
 
         $Bot->SendMessage([
             'chat_id' => 1265170068,
-            'text' => 'FAQBot.php was stopped..'
+            'text' => 'FAQBot.php stopped.'
         ]);
 
         $this->assertEquals(true, true);
