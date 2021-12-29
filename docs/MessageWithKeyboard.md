@@ -4,6 +4,7 @@ There's two type of keyboards..
 - `ReplyKeyboardMarkup` sticks under chat input, Useful for text commands
 
 ## `InlineKeyboard`
+### Url buttons
 The parameter `reply_markup` is used for keyboard. Its value should be a JSON string, So you'll need to use `json_encode()` with arrays (To be same as classes).
 
 ```php
@@ -41,9 +42,51 @@ $Bot->SendMessage([
 ]);
 ```
 
+### Callback query buttons
+If these type of buttons was clicked, it will send `callback_query` update to the bot.
+You can get more info in [Callback query documentation](https://muaath5.github.io/SimpleBotAPI/CallbackQueries)
+
+Example:
+```php
+$Keyboard = ['inline_keyboard' => [
+    # The first row
+    [
+        [
+            'text' => 'Get help',
+            'callback_data' => 'help'
+        ]
+    ],
+
+    # Second row
+    [
+        [
+            'text' => 'Go to payment',
+            'callback_data' => 'pre_send_invoice'
+        ],
+        [
+            'text' => 'By something else',
+            'callback_data' => 'shopping_again'
+        ]
+    ],
+]];
+
+# Sending with json_encode method
+$Bot->SendMessage([
+    'chat_id' => 1265170068,
+    'text' => 'The item was added to your shopping cart, Now choose one of those options'
+    'reply_markup' => json_encode($Keyboard)
+]);
+```
+
+### 
+
+### Payment buttons
+These type of buttons only can be used in method `sendInvoice`, and it must be at first row and column
+You'll get more info in [Payments documentation](https://muaath5.github.io/SimpleBotAPI/TelegramPayments)
+
 ## ReplyKeyboardMarkup
 These keyboards when one of them is pressed, A message will be sent with same text in the button.
-### Sending
+### Showing keyboard
 ```php
 $Keyboard = [
     'resize_keyboard' => true, // Like this it'll takes size as the button text
@@ -77,7 +120,7 @@ $Bot->SendMessage([
 ]);
 ```
 
-### Deleting
+### Hiding keyboard
 If you set `one_time_keyboard=false`, Then your bot should delete it manually, Or it'll be shown all the time.
 
 ```php

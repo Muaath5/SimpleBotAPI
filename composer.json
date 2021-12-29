@@ -3,19 +3,27 @@
     "description": "Simple & Easy Telegram Bot API in PHP",
     "type": "library",
     "license": "GPL-3.0-only",
+    "readme": "./README.md",
     "authors": [
         {
             "name": "Muaath Alqarni",
-            "email": "muaath1428@hotmail.com"
+            "email": "muaath1428@hotmail.com",
+            "role": "Developer"
         }
     ],
     "support": {
         "email": "muaath1428@hotmail.com",
-        "issues": "https://github.com/Muaath5/SimpleBotAPI/issues"
+        "docs": "https://Muaath5.github.io/SimpleBotAPI/",
+        "source": "https://github.com/Muaath5/SimpleBotAPI/issues/tree/",
+        "issues": "https://github.com/Muaath5/SimpleBotAPI/issues",
+        "chat": "https://t.me/Muaath_5"
     },
     "minimum-stability": "stable",
     "require-dev": {
         "phpunit/phpunit": "^9.5"
+    },
+    "require": {
+        "ext-curl": "*"
     },
     "autoload": {
         "psr-4": {
@@ -23,5 +31,8 @@
             "SimpleBotAPI\\Exceptions\\": "src/Exceptions/",
             "SimpleBotAPI\\Examples\\": "examples/"
         }
+    },
+    "extra": {
+        "version": "5.5.1"
     }
 }

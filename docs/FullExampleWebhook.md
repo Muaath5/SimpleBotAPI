@@ -1,4 +1,4 @@
-# Full Example
+# Full Example (Webhook)
 
 ```php
 # Include autoload.php
@@ -27,5 +27,5 @@ else
 }
 
 $Bot = new TelegramBot(getenv('TELEGRAM_BOT_TOKEN'), new MyBot(), $Settings);
-$Bot->OnWebhookUpdate();
+$Bot->OnWebhookUpdate(); // Processing received update
 ```
