@@ -3,11 +3,14 @@
 Use handler `InlineQueryHandler`
 
 ## Answering inline queries
-Use method `answerInlineQuery` like this:
+Use method `answerInlineQuery`
 
 ## Buttons related to inline query
+You can use `switch_inline_query` & `switch_inline_query_current_chat` buttons in inline keyboard to let user start an inline query.
 
-## Examples:
+More info will be in [keyboards documntation](https://muaath5.github.io/SimpleBotAPI/MessageWithKeyboards)
+
+## Example
 ```php
 public function InlineQueryHandler($inline_query)
 {
@@ -19,6 +22,5 @@ public function InlineQueryHandler($inline_query)
     ]);
 }
 ```
-
 
 [Example](https://github.com/Muaath5/SimpleBotAPI/tree/examples/InlineQueriesIndexBot.php)
