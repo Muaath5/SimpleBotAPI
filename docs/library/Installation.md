@@ -2,11 +2,9 @@
 
 ## Prerequists
 - cURL PHP extension enabled
-### Suggested
-- PHP 8.0
+- PHP 7.0 (8.0 suggested)
 
 ## Installing via composer
-Run this command in the command line in your project directory:
 ```sh
 composer require muaath5/simple-bot-api
 ```
@@ -16,4 +14,4 @@ composer require muaath5/simple-bot-api
 2. Copy `src/` directory to your project
 3. In `composer.json`, Add in `autoload` field, In `psr-4` field: `"SimpleBotAPI\\": "src/", "SimpleBotAPI\\Exceptions\\": "src/Exceptions/"`
 
-[Go to next docuemnt?](https://muaath5.github.io/SimpleBotAPI/CreatingBot)
+[Go to next docuemnt?](https://muaath5.github.io/SimpleBotAPI/basics/CreatingBot)

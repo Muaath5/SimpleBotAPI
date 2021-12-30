@@ -15,7 +15,7 @@ class MyBot extends UpdatesHandler
 {
     
 }
-
+# Settings handling
 if (!file_exists(SETTINGS_FILE_PATH))
 {
     $Settings = new BotSettings(true, SETTINGS_FILE_PATH);

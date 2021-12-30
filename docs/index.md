@@ -1,24 +1,33 @@
 # SimpleBotAPI Docs Index
-This is documentation of SimpleBotAPI. For any suggestions, contact with [@Muaath_5](https://t.me/Muaath_5)
+
+This is documentation of SimpleBotAPI, not Bot API
 Here is the index of all docs
 
-## Library
-- [Installation](https://muaath5.github.io/SimpleBotAPI/Installation)
-- [Creating tests (Contributing guidelines)]()
-- [Creating examples (Contributing guidelines)]()
+___
 
-## Basics
-- [Creating Bot](https://muaath5.github.io/SimpleBotAPI/CreatingBot)
-- [Updates Handlers](https://muaath5.github.io/SimpleBotAPI/UpdatesHandlers)
+## Bot API documentation
+You can check [Bot API docs](https://core.telegram.org/bots/api) to check available requests and objects
+Here is documentation about the library and its features
 
-## Examples
-- [Full Example (Webhook)](https://muaath5.github.io/SimpleBotAPI/FullExampleWebhook)
-- [Full Example (Webhook with Laravel)](https://muaath5.github.io/SimpleBotAPI/FullExampleWebhookLaravel)
-- [Full Example (Long-polling)](https://muaath5.github.io/SimpleBotAPI/FullExampleLongPolling)
+## SimpleBotAPI documentation parts
 
-## Advanced
-- [Bot Settings](https://muaath5.github.io/SimpleBotAPI/BotSettings)
-- [Sending messages with keyboard](https://muaath5.github.io/SimpleBotAPI/MessagesWithKeyboard)
-- [Inline queries](https://muaath5.github.io/SimpleBotAPI/InlineQueries)
-- [Callback queries](https://muaath5.github.io/SimpleBotAPI/CallbackQueries)
-- [Telegram payments](https://muaath5.github.io/SimpleBotAPI/TelegramPayments)
+### Library
+- [Installation](https://muaath5.github.io/SimpleBotAPI/library/Installation)
+
+### Basics
+- [Creating Bot](https://muaath5.github.io/SimpleBotAPI/basics/CreatingBot)
+- [Updates Handlers](https://muaath5.github.io/SimpleBotAPI/basics/UpdatesHandlers)
+
+### Examples
+- [Webhook Example](https://muaath5.github.io/SimpleBotAPI/examples/Webhook)
+- [Laravel Webhook Example](https://muaath5.github.io/SimpleBotAPI/examples/LaravelWebhook)
+- [Long-polling Example](https://muaath5.github.io/SimpleBotAPI/examples/LongPolling)
+
+### Advanced
+- [Bot Settings](https://muaath5.github.io/SimpleBotAPI/advanced/BotSettings)
+- [Sending messages with keyboard](https://muaath5.github.io/SimpleBotAPI/advanced/MessagesWithKeyboard)
+- [Inline queries](https://muaath5.github.io/SimpleBotAPI/advanced/InlineQueries)
+- [Callback queries](https://muaath5.github.io/SimpleBotAPI/advanced/CallbackQueries)
+- [Telegram payments](https://muaath5.github.io/SimpleBotAPI/advanced/TelegramPayments)
+
+Contact [@Muaath_5](https://t.me/Muaath_5) on anything missed or need to be fixed

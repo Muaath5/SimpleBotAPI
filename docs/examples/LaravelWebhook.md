@@ -12,9 +12,9 @@ class MyBot extends UpdatesHandler
 }
 
 # Telegram sends updates in POST requests
-# You can set any route you want
 Route::post('/bot' function () {
     $Bot = new TelegramBot(getenv('TELEGRAM_BOT_TOKEN'), new MyBot(), new BotSettings());
-    $Bot->OnWebhookUpdate(); // Processing received update
-});
+    $Bot->OnWebhookUpdate();
+})->middleware('api');
+# because it's not allowed to use cookies/sessions with Bot API
 ```
