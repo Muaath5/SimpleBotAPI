@@ -33,6 +33,6 @@
         }
     },
     "extra": {
-        "version": "5.5.1"
+        "bot_api_version": "5.6"
     }
 }

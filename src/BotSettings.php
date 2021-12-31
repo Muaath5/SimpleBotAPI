@@ -15,8 +15,13 @@ class BotSettings
         'chat_join_request'
     ];
 
-    # These should be set by library's user
+    /**
+     * You should use this like what you want
+     */
     public array $BotAdmins = [];
+    /**
+     * You should use this like what you want, you may store here anything
+     */
     public ?stdClass $AdditionalData = null;
 
     public int $UpdatesTimeout = 1;
@@ -25,17 +30,35 @@ class BotSettings
 
     public bool $CheckUpdates = false;
 
+    /**
+     * This will be used by the bot in the next updates
+     */
     public array $BotUsers = [];
     public bool $AutoSaveBotUsers = false;
 
-    public int $HandleDuplicateUpdatesLevel = 1;
+    /**
+     * How to handle duplicate updates.
+     * 0: Means no handling
+     * 1: Means saving the info about the last_update_id & update_id with checking if last_update is sooner than 1 week
+     * 2: Means checking if last_update_id < update_id
+     * 3: Means checking if last_update === update_id-1
+     */
+    public int $HandleDuplicateUpdatesLevel = 2;
 
     public bool $AutoHandleSettings = false;
     public bool $AutoHandleFloodException = true;
     public bool $AutoHandleChatMigratedException = true;
     
+    /**
+     * Bot API Server host, you can use custom server
+     * It should be in this format ONLY:
+     * https://host.any
+     */
     public string $APIHost = 'https://api.telegram.org';
 
+    /**
+     * What is the path to save these settings
+     */
     public string $SaveFilePath = '';
 
     public function __construct(

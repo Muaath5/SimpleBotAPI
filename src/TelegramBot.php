@@ -10,20 +10,33 @@ use SimpleBotAPI\Exceptions\TelegramFloodException;
 use SimpleBotAPI\Exceptions\TelegramUnauthorizedException;
 
 /**
- * Telegram Bot Client
- * @version Bot API 5.3
+ * Telegram Bot Client, Use to send requests
+ * @version Bot API 5.6
  */
 class TelegramBot
 {
     public const TIMEOUT = 63;
 
+    /**
+     * Bot token obtained from @BotFather
+     */
     private string $Token;
 
+    /**
+     * Used in checking updates
+     */
     public string $HashingMethod = 'sha512';
 
+    /**
+     * Settings related to the bot
+     */
     public BotSettings $Settings;
     
+    /**
+     * Methods will be called whenever an update come
+     */
     private ?UpdatesHandler $UpdatesHandler = null;
+
     private \CurlHandle $curl;
 
     public function __construct(string $token, UpdatesHandler $updatesHandler = null, BotSettings $settings = null, bool $logErrors = true)
@@ -94,9 +107,9 @@ class TelegramBot
             # Sooner than one week, Check the ID
             if ($this->Settings->LastUpdateDate > strtotime('-1 week'))
             {
-                $isRealUpdate = false;
+                $isRealUpdate = false || ($this->Settings->HandleDuplicateUpdatesLevel == 1);
 
-                if ($this->Settings->HandleDuplicateUpdatesLevel == 1 && $this->Settings->LastUpdateID < $update->update_id)
+                if ($this->Settings->HandleDuplicateUpdatesLevel == 2 && $this->Settings->LastUpdateID < $update->update_id)
                     $isRealUpdate = true;
                 else if ($this->Settings->HandleDuplicateUpdatesLevel == 3 && $this->Settings->LastUpdateID === $update->update_id - 1)
                     $isRealUpdate = true;
@@ -119,6 +132,7 @@ class TelegramBot
             # Otherwise, Don't check the ID, Take it as it is
             else 
             {
+                error_log("More than 1 week with no updates, Update ID changed from {$this->Settings->LastUpdateID} to {$update->update_id}");
                 $this->Settings->LastUpdateID = max($this->Settings->LastUpdateID, $update->update_id);
                 $this->Settings->LastUpdateDate = time();
             }
@@ -304,52 +318,55 @@ class TelegramBot
         if (curl_errno($this->curl)) {
             throw new \RuntimeException(curl_error($this->curl), curl_errno($this->curl));
         }
-        $object = json_decode($result);
-        if (!$object->ok)
+        $tg_return = json_decode($result);
+        if (!$tg_return->ok)
         {
             # If the error contains additional info
-            if (property_exists($object, 'parameters'))
+            if (property_exists($tg_return, 'parameters'))
             {
                 # Flood error
-                if (property_exists($object->parameters, 'retry_after'))
+                if (property_exists($tg_return->parameters, 'retry_after'))
                 {
-                    $secondsToWait = $object->parameters->retry_after * 1000000;
-                    error_log("WARNING: Flood error, Retry after {$secondsToWait}");
+                    $secondsToWait = $tg_return->parameters->retry_after * 1000000;
+                    error_log("WARNING: Flood error on request {$method}, retry after {$secondsToWait}");
                     if ($this->Settings->AutoHandleFloodException)
                     {
                         usleep($secondsToWait + 1000000);
                         # Recall same method
+                        error_log("Auto recall");
                         $this->$method($params[0] ?? []);
                     }
                     else
                     {
-                        throw new TelegramFloodException($object);
+                        throw new TelegramFloodException($tg_return);
                     }
                 }
 
                 # Chat ID migrated error
-                if (property_exists($object->parameters, 'migrate_to_chat_id'))
+                if (property_exists($tg_return->parameters, 'migrate_to_chat_id'))
                 {
                     if ($this->Settings->AutoHandleChatMigratedException)
                     {
-                        $params[0]['chat_id'] = $object->parameters->migrate_to_chat_id;
+                        $params[0]['chat_id'] = $tg_return->parameters->migrate_to_chat_id;
                         $this->$method($params[0]);
                     }
                     else
                     {
-                        throw new TelegramChatMigratedException($object);
+                        throw new TelegramChatMigratedException($tg_return);
                     }
                 }
             }
-            else if ($object->error_code == 401)
+            else if ($tg_return->error_code == 401)
             {
-                throw new TelegramUnauthorizedException($object->description);
+                throw new TelegramUnauthorizedException($tg_return->description);
             }
             else
             {
-                throw new TelegramException($object);
+                throw new TelegramException($tg_return);
             }
         }
-        return $object->result;
+
+        # Only the result
+        return $tg_return->result;
     }
 }

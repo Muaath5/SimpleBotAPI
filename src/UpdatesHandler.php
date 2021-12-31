@@ -6,7 +6,7 @@ use SimpleBotAPI\TelegramBot;
 
 /**
  * A class should be exists for each bot that processes all updates either webhook or long-polling.
- * @version Bot API 5.3
+ * @version Bot API 5.6
  */
 class UpdatesHandler
 {

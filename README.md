@@ -1,6 +1,6 @@
 # Simple Bot API
 [![Licence: GPL v3.0](https://img.shields.io/badge/Licence-GPL%20v3.0-green)](LICENCE)
-[![Bot API Version: 5.5.1](https://img.shields.io/badge/Bot%20API%20Version-5.5.1-dodgerblue)](https://core.telegram.org/bots/api#april-26-2021)
+[![Bot API Version: 5.6](https://img.shields.io/badge/Bot%20API%20Version-5.6-dodgerblue)](https://core.telegram.org/bots/api)
 [![PHP Unit Tests](https://github.com/Muaath5/SimpleBotAPI/actions/workflows/php.yml/badge.svg)](https://github.com/Muaath5/SimpleBotAPI/actions/workflows/php.yml)
 
 
@@ -93,7 +93,7 @@ You can see a full example [here](https://muaath5.github.io/SimpleBotAPI/FullExa
 - [x] Auto-store for bot users
 - [x] Add JSON Storage can be used by bot
 - [x] Method that posts to all bot users
-- [ ] Add logging (Done partially)
+- [X] Add logging
 - [ ] Add DB Storage can be used by bot
 - [ ] Document missed things
 
