@@ -5,7 +5,7 @@ namespace SimpleBotAPI\Exceptions;
 use SimpleBotAPI\Exceptions\TelegramException;
 
 /**
- * @version Bot API 5.3
+ * @version Bot API 5.6
  */
 class TelegramFloodException extends TelegramException
 {

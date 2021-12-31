@@ -13,7 +13,7 @@ class MyBot extends UpdatesHandler
 
 # Telegram sends updates in POST requests
 Route::post('/bot' function () {
-    $Bot = new TelegramBot(getenv('TELEGRAM_BOT_TOKEN'), new MyBot(), new BotSettings());
+    $Bot = new TelegramBot(env('TELEGRAM_BOT_TOKEN'), new MyBot());
     $Bot->OnWebhookUpdate();
 })->middleware('api');
 # because it's not allowed to use cookies/sessions with Bot API

@@ -4,7 +4,7 @@ namespace SimpleBotAPI\Exceptions;
 
 /**
  * Telegram Bot API Exception
- * @version Bot API 5.3
+ * @version Bot API 5.6 
  */
 class TelegramException extends \Exception
 {
